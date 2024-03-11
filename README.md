@@ -23,7 +23,7 @@ https://github.com/ros-perception/openslam_gmapping
 
 https://github.com/ros-naoqi/naoqi_driver
 
->##  Error solution
+#  Error solution
 
 Could NOT find SDL (missing: SDL_LIBRARY SDL_INCLUDE_DIR)
 
