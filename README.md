@@ -12,26 +12,15 @@
 https://github.com/ros-planning/navigation
 
 >##  ros_gmapping
+
 https://github.com/ros-perception/slam_gmapping
-
->##  ros_openslam gmapping
-
 https://github.com/ros-perception/openslam_gmapping
 
 >##  naoqi_driver
 
 https://github.com/ros-naoqi/naoqi_driver
 
->## pynaoqi
-https://www.aldebaran.com/en/support/pepper-naoqi-2-9/downloads-softwares
-1. download old:Pepper SDK(for2.5.5 ver)
-2. tar -zxvf <filename>
-3. export PYTJONPATH=${PYTHONPATH}:~/pynaoqi/lib/python2.7/site-packages ->add at ~/.bashrc file
-
-
-
-
-#  Error solution
+>##  Error solution
 
 Could NOT find SDL (missing: SDL_LIBRARY SDL_INCLUDE_DIR)
 
@@ -49,5 +38,3 @@ CMake error with move_base_msgs
 naoqi driver catkin_make Error
 
 >sudo apt install ros-melodic-naoqi-driver
-
-
