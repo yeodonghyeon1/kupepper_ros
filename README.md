@@ -14,6 +14,9 @@ https://github.com/ros-planning/navigation
 >##  ros_gmapping
 
 https://github.com/ros-perception/slam_gmapping
+
+>##  ros_openslam gmapping
+
 https://github.com/ros-perception/openslam_gmapping
 
 >##  naoqi_driver
