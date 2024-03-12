@@ -53,6 +53,7 @@ class testPepper:
         rate = rospy.Rate(10) # 10hz
         # self.pub_laser = rospy.Publisher('/scan', LaserScan, queue_size=1000)
         
+        self.pub_laser2 = rospy.Publisher('/scan', LaserScan, queue_size=100)
         self.pub_laser = rospy.Publisher('/base_scan', LaserScan, queue_size=100)
         self.pub_imu = rospy.Publisher('/imu', Imu, queue_size=100)
 
@@ -72,6 +73,7 @@ class testPepper:
         # rospy.loginfo(rospy.get_caller_id() + 'I heard %s', data)
         self.data_laser =data
         self.pub_laser.publish(self.data_laser)
+        self.pub_laser2.publish(self.data_laser)
 
 
 def test():
