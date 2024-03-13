@@ -12,11 +12,13 @@ from sensor_msgs.msg._MultiEchoLaserScan import MultiEchoLaserScan
 from sensor_msgs.msg._Imu import Imu
 import time
 import threading
+from geometry_msgs.msg import Twist
+import keyboard
 #2024-02-24T060328.807Z.explo
 class testPepper:
 
     def __init__(self):
-        ip_address = "192.168.0.125"
+        ip_address = "192.168.130.51"
         port = 9559
 
         self.session = qi.Session()
@@ -56,9 +58,10 @@ class testPepper:
         self.pub_laser2 = rospy.Publisher('/scan', LaserScan, queue_size=100)
         self.pub_laser = rospy.Publisher('/base_scan', LaserScan, queue_size=100)
         self.pub_imu = rospy.Publisher('/imu', Imu, queue_size=100)
-
+        self.cmd_vel_sub = rospy.Subscriber('/turtle1/cmd_vel', Twist, self.cmd_vel_callback) 
         rospy.Subscriber('/naoqi_driver/imu/base', Imu, self.callback)
         rospy.Subscriber('/naoqi_driver/laser', LaserScan, self.callback2)
+
         while not rospy.is_shutdown():
             # hello_str = "hello world %s" % rospy.get_time()
             # rospy.loginfo(hello_str) 
@@ -68,12 +71,22 @@ class testPepper:
         # rospy.loginfo(rospy.get_caller_id() + 'I heard %s', data)
         self.data_imu = data
         # self.pub_imu.publish(self.data_imu)
+
         pass
     def callback2(self, data):
         # rospy.loginfo(rospy.get_caller_id() + 'I heard %s', data)
         self.data_laser =data
         self.pub_laser.publish(self.data_laser)
         self.pub_laser2.publish(self.data_laser)
+
+    def cmd_vel_callback(self, data):
+        rospy.loginfo(data)
+        x = data.linear.x
+        y = data.linear.y
+        w = data.angular.z
+        self.motion_service.move(x,y,w)
+      
+        # self.navigation_service.navigateTo(x,y)
 
 
 def test():
