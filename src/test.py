@@ -18,7 +18,7 @@ import keyboard
 class testPepper:
 
     def __init__(self):
-        ip_address = "192.168.130.51"
+        ip_address = "192.168.0.125"
         port = 9559
 
         self.session = qi.Session()
@@ -81,11 +81,10 @@ class testPepper:
 
     def cmd_vel_callback(self, data):
         rospy.loginfo(data)
-        x = data.linear.x
-        y = data.linear.y
-        w = data.angular.z
-        self.motion_service.move(x,y,w)
-      
+        # x = data.linear.x
+        # y = data.linear.y
+        # w = data.angular.z
+        # self.motion_service.move(x,y,w)
         # self.navigation_service.navigateTo(x,y)
 
 
@@ -97,7 +96,6 @@ def test():
 
 if __name__ == "__main__":
     pepper = testPepper()
-    
     thread3 = threading.Thread(target=test)
     thread3.start()
     
