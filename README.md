@@ -6,11 +6,8 @@
 
 
 
-<<<<<<< HEAD
 #  require
 
-=======
->>>>>>> Update README.md
 >##  ros_navigation
 https://github.com/ros-planning/navigation
 
