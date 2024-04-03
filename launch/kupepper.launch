@@ -1,14 +1,14 @@
 <launch>
 
    <!-- <master auto="start"/> -->
-    <!-- <param name="/use_sim_time" value="true"/> -->
+    <param name="/use_sim_time" value="false"/>
 
  <!-- Run the map server --> 
-   <node pkg="map_server" name="map_server" type="map_server" args="$(find kupepper_ros)/map/test_map.yaml"/>
+   <node pkg="map_server" name="map_server" type="map_server" args="$(find kupepper_ros)/map/test_map2.yaml"/>
 
  <!-- Run the naoqi-driver -->   
     <include file="$(find naoqi_driver)/launch/naoqi_driver.launch" >
-      <arg name="nao_ip"            default="192.168.0.125" />
+      <arg name="nao_ip"            default="192.168.228.51" />
       <arg name="nao_port"          default="$(optenv NAO_PORT 9559)" />
       <arg name="roscore_ip"        default="127.0.0.1" />
       <arg name="network_interface" default="eth0" />
@@ -18,7 +18,7 @@
      </include>
 
  <!--- Run AMCL --> 
-    <include file="$(find amcl)/examples/amcl_omni.launch" />
+    <include file="$(find kupepper_ros)/launch/amcl_test.launch" />
 
  <!--- Run qi libarary & control --> 
    <node pkg="kupepper_ros" type="test.py"  name="kupepper_ros"></node>
@@ -26,8 +26,8 @@
  <!--- Run move_base --> 
    <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
 
-    <rosparam file="$(find kupepper_ros)/yaml2/costmap_common_params.yaml" command="load" ns="global_costmap" /> 
-    <rosparam file="$(find kupepper_ros)/yaml2/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find kupepper_ros)/yaml2/costmap_common_params2.yaml" command="load" ns="global_costmap" /> 
+    <rosparam file="$(find kupepper_ros)/yaml2/costmap_common_params2.yaml" command="load" ns="local_costmap" />
     <rosparam file="$(find kupepper_ros)/yaml2/local_costmap_params.yaml" command="load" />
     <rosparam file="$(find kupepper_ros)/yaml2/global_costmap_params.yaml" command="load" /> 
     <rosparam file="$(find kupepper_ros)/yaml2/move_base_params.yaml" command="load" />

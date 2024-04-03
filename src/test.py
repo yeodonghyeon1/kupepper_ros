@@ -18,7 +18,7 @@ import keyboard
 class testPepper:
 
     def __init__(self):
-        ip_address = "192.168.0.125"
+        ip_address = "192.168.228.51"
         port = 9559
 
         self.session = qi.Session()
