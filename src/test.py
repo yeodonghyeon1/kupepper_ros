@@ -17,11 +17,7 @@ import keyboard
 #2024-02-24T060328.807Z.explo
 class testPepper:
 
-    def __init__(self):
-        ip_address = "192.168.0.125"
-        # ip_address = "192.168.228.51"
-
-        port = 9559
+    def __init__(self, ip_address, port):
 
         self.session = qi.Session()
         self.session.connect("tcp://{0}:{1}".format(ip_address, port))
@@ -53,13 +49,9 @@ class testPepper:
             time.sleep(1)
 
     def talker(self):
-        rospy.init_node('talker', anonymous=True)
-        rate = rospy.Rate(10) # 10hz
-        # self.pub_laser = rospy.Publisher('/scan', LaserScan, queue_size=1000)
         
-        # self.pub_laser = rospy.Publisher('/scan_merged', LaserScan, queue_size=100)
-        # self.pub_laser2 = rospy.Publisher('/scan', LaserScan, queue_size=100)
-        self.pub_laser3 = rospy.Publisher('/base_scan', LaserScan, queue_size=100)
+        rate = rospy.Rate(10) # 10hz
+        self.pub_laser = rospy.Publisher('/base_scan', LaserScan, queue_size=100)
         self.pub_imu = rospy.Publisher('/imu', Imu, queue_size=100)
         self.cmd_vel_sub = rospy.Subscriber('/turtle1/cmd_vel', Twist, self.cmd_vel_callback) 
         rospy.Subscriber('/naoqi_driver/imu/base', Imu, self.callback)
@@ -77,11 +69,9 @@ class testPepper:
 
         pass
     def callback2(self, data):
-        # rospy.loginfo(rospy.get_caller_id() + 'I heard %s', data)
         self.data_laser =data
-        # self.pub_laser.publish(self.data_laser)
-        # self.pub_laser2.publish(self.data_laser)
-        self.pub_laser3.publish(self.data_laser)
+        self.pub_laser.publish(self.data_laser)
+
     def cmd_vel_callback(self, data):
         rospy.loginfo(data)
         x = data.linear.x
@@ -98,7 +88,10 @@ def test():
 
 
 if __name__ == "__main__":
-    pepper = testPepper()
+    rospy.init_node('talker', anonymous=True)
+
+
+    pepper = testPepper(rospy.get_param('~pepper_ip'), rospy.get_param('~pepper_port'))
     thread3 = threading.Thread(target=test)
     thread3.start()
     

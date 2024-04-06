@@ -1,17 +1,21 @@
 <launch>
 
  <!-- <master auto="start"/> -->
-    <param name="/use_sim_time" value="false"/>
+  <arg name="ip"   default="192.168.0.125"/>
+  <arg name="port"   default="9559"/>
+
+      <!-- <arg name="nao_ip"            default="192.168.228.51" /> -->
+
+
+  <param name="/use_sim_time" value="false"/>
 
  <!-- Run the map server --> 
    <node pkg="map_server" name="map_server" type="map_server" args="$(find kupepper_ros)/map/test_map4.yaml"/>
 
  <!-- Run the naoqi-driver -->   
     <include file="$(find naoqi_driver)/launch/naoqi_driver.launch" >
-      <arg name="nao_ip"            default="192.168.0.125" />
-      <!-- <arg name="nao_ip"            default="192.168.228.51" /> -->
-
-      <arg name="nao_port"          default="$(optenv NAO_PORT 9559)" />
+      <arg name="nao_ip"            default="$(arg ip)" />
+      <arg name="nao_port"          default="$(arg port)" />
       <arg name="roscore_ip"        default="127.0.0.1" />
       <arg name="network_interface" default="eth0" />
       <arg name="namespace"         default="naoqi_driver" />
@@ -24,12 +28,11 @@
     <include file="$(find kupepper_ros)/launch/amcl_test.launch" />
 
  <!--- Run qi libarary & control --> 
-   <node pkg="kupepper_ros" type="test.py"  name="kupepper_ros"></node>
+   <node pkg="kupepper_ros" type="test.py"  name="kupepper_ros">
+    <param name="pepper_ip" value="$(arg ip)"/>
+    <param name="pepper_port" value="$(arg port)"/>
+   </node>
 
-    
-    <!-- <include file="$(find ira_laser_tools)/launch/laserscan_virtualizer.launch" /> -->
-  
-  <!-- <node pkg="ira_laser_tools" type="laserscan_multi_merger" name="laserscan_multi_merger"> -->
  <!--- Run move_base --> 
    <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
 
@@ -51,17 +54,17 @@
           args="-d $(find kupepper_ros)/rviz/pepper.rviz"/>
 
     <!-- <include file="$(find kupepper_ros)/launch/depthimage_to_laserscan.launch" /> -->
-    <node pkg="depthimage_to_laserscan" type="depthimage_to_laserscan" name="depthimage_to_laserscan" output="screen">
+    <!-- <node pkg="depthimage_to_laserscan" type="depthimage_to_laserscan" name="depthimage_to_laserscan" output="screen">
         <param name="scan_height" value="3"/> 
         <param name="range_max" value="10"/> 
         <param name="output_frame_id" value="base_footprint"/> 
         <remap from="image" to="/naoqi_driver/camera/depth/image_raw" />
         <remap from="camera_info" to="/naoqi_driver/camera/depth/camera_info" />
-    </node>
+    </node> -->
 
 
 
-    <include file="$(find ira_laser_tools)/launch/laserscan_multi_merger.launch" />
+    <!-- <include file="$(find ira_laser_tools)/launch/laserscan_multi_merger.launch" /> -->
 
 
 </launch> 
