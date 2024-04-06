@@ -52,6 +52,8 @@ class testPepper:
         
         rate = rospy.Rate(10) # 10hz
         self.pub_laser = rospy.Publisher('/base_scan', LaserScan, queue_size=100)
+        self.pub_laser2 = rospy.Publisher('/scan', LaserScan, queue_size=100)
+
         self.pub_imu = rospy.Publisher('/imu', Imu, queue_size=100)
         self.cmd_vel_sub = rospy.Subscriber('/turtle1/cmd_vel', Twist, self.cmd_vel_callback) 
         rospy.Subscriber('/naoqi_driver/imu/base', Imu, self.callback)
@@ -71,6 +73,8 @@ class testPepper:
     def callback2(self, data):
         self.data_laser =data
         self.pub_laser.publish(self.data_laser)
+        # self.pub_laser2.publish(self.data_laser)
+
 
     def cmd_vel_callback(self, data):
         rospy.loginfo(data)

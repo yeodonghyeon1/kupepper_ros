@@ -1,13 +1,12 @@
 <launch>
 
  <!-- <master auto="start"/> -->
-  <arg name="ip"   default="192.168.0.125"/>
+  <arg name="ip"   default="192.168.0.125"/> <!-- default="192.168.228.51" -->
   <arg name="port"   default="9559"/>
-
-      <!-- <arg name="nao_ip"            default="192.168.228.51" /> -->
 
 
   <param name="/use_sim_time" value="false"/>
+
 
  <!-- Run the map server --> 
    <node pkg="map_server" name="map_server" type="map_server" args="$(find kupepper_ros)/map/test_map4.yaml"/>
@@ -35,7 +34,6 @@
 
  <!--- Run move_base --> 
    <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
-
     <rosparam file="$(find kupepper_ros)/yaml2/costmap_common_params2.yaml" command="load" ns="global_costmap" /> 
     <rosparam file="$(find kupepper_ros)/yaml2/costmap_common_params2.yaml" command="load" ns="local_costmap" />
     <rosparam file="$(find kupepper_ros)/yaml2/local_costmap_params.yaml" command="load" />
@@ -48,23 +46,16 @@
     <remap from="cmd_vel" to="cmd_vel"/>
 
  </node>
+
+    <include file="$(find kupepper_ros)/launch/depthimage_to_laserscan.launch" />
+    <include file="$(find ira_laser_tools)/launch/laserscan_multi_merger.launch" />
+ 
  
   <!--- Run rviz --> 
     <node pkg="rviz" type="rviz" name="rviz" required="true"
           args="-d $(find kupepper_ros)/rviz/pepper.rviz"/>
 
-    <!-- <include file="$(find kupepper_ros)/launch/depthimage_to_laserscan.launch" /> -->
-    <!-- <node pkg="depthimage_to_laserscan" type="depthimage_to_laserscan" name="depthimage_to_laserscan" output="screen">
-        <param name="scan_height" value="3"/> 
-        <param name="range_max" value="10"/> 
-        <param name="output_frame_id" value="base_footprint"/> 
-        <remap from="image" to="/naoqi_driver/camera/depth/image_raw" />
-        <remap from="camera_info" to="/naoqi_driver/camera/depth/camera_info" />
-    </node> -->
 
-
-
-    <!-- <include file="$(find ira_laser_tools)/launch/laserscan_multi_merger.launch" /> -->
-
+<!-- <param name="/use_sim_time" value="true"/> -->
 
 </launch> 
