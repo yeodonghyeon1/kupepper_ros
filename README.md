@@ -8,6 +8,12 @@
 
 #  require
 
+>##  depthimage_to_laserscan
+http://wiki.ros.org/depthimage_to_laserscan
+
+>##  depthimage_to_laserscan
+http://wiki.ros.org/ira_laser_tools
+
 >##  ros_navigation
 https://github.com/ros-planning/navigation
 
