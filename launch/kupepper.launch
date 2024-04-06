@@ -48,7 +48,7 @@
  </node>
 
     <include file="$(find kupepper_ros)/launch/depthimage_to_laserscan.launch" />
-    <include file="$(find ira_laser_tools)/launch/laserscan_multi_merger.launch" />
+    <include file="$(find kupepper_ros)/launch/laserscan_multi_merger.launch" />
  
  
   <!--- Run rviz --> 
