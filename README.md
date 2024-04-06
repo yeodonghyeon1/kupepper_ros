@@ -9,10 +9,10 @@
 #  require
 
 >##  depthimage_to_laserscan
-http://wiki.ros.org/depthimage_to_laserscan
+https://github.com/ros-perception/depthimage_to_laserscan
 
 >##  ira_laser_tools
-http://wiki.ros.org/ira_laser_tools
+https://github.com/iralabdisco/ira_laser_tools
 
 >##  ros_navigation
 https://github.com/ros-planning/navigation
