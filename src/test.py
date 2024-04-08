@@ -15,6 +15,8 @@ import threading
 from geometry_msgs.msg import Twist
 import keyboard
 #2024-02-24T060328.807Z.explo
+
+
 class testPepper:
 
     def __init__(self, ip_address, port):
@@ -32,10 +34,15 @@ class testPepper:
         self.navigation_service = self.session.service("ALNavigation")
         self.memory_service = self.session.service("ALMemory")
         self.tts_service = self.session.service("ALAnimatedSpeech")
+        self.autolife_service = self.session.service("ALAutonomousLife")
+        self.posture_service = self.session.service("ALRobotPosture")
+        self.motion_service.setOrthogonalSecurityDistance(0.2)
         self.voice_speed = 100
         self.voice_shape = 100
-
-
+        self.autolife_service.setState('disabled')
+        self.posture_service.goToPosture("Stand", 3.0)
+        thread3 = threading.Thread(target=self.test)
+        thread3.start()
     def say(self, text, bodylanguage="contextual"):
         """Animated say text"""
         configuration = {"bodyLanguageMode":bodylanguage}
@@ -85,10 +92,12 @@ class testPepper:
         # self.navigation_service.navigateTo(x,y)
 
 
-def test():
-    while True:
-        time.sleep(1)
-        print("testing...")
+    def test(self):
+        while True:
+            self.motion_service.setStiffnesses("Head",1.0)
+            self.motion_service.setAngles("Head",[0.,0.],0.05)
+            time.sleep(2)
+
 
 
 if __name__ == "__main__":
@@ -96,8 +105,7 @@ if __name__ == "__main__":
 
 
     pepper = testPepper(rospy.get_param('~pepper_ip'), rospy.get_param('~pepper_port'))
-    thread3 = threading.Thread(target=test)
-    thread3.start()
+
     
     # thread = threading.Thread(target=pepper.base)
     # thread.start()
