@@ -29,7 +29,7 @@ https://github.com/ros-perception/openslam_gmapping
 
 https://github.com/ros-naoqi/naoqi_driver
 
->## pynaoqi
+>## pynaoqi(first install!! )
 https://www.aldebaran.com/en/support/pepper-naoqi-2-9/downloads-softwares
 1. download old:Pepper SDK(for2.5.5 ver)
 2. tar -zxvf <filename>
