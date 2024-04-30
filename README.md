@@ -51,8 +51,6 @@ CMake error with move_base_msgs
 
 >git clone https://github.com/ros-planning/navigation_msgs.git
 
-naoqi driver catkin_make Error
 
->sudo apt install ros-melodic-naoqi-driver
 
 
