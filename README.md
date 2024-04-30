@@ -33,9 +33,7 @@ https://github.com/ros-naoqi/naoqi_driver
 https://www.aldebaran.com/en/support/pepper-naoqi-2-9/downloads-softwares
 1. download old:Pepper SDK(for2.5.5 ver)
 2. tar -zxvf <filename>
-3. export PYTJONPATH=${PYTHONPATH}:~/pynaoqi/lib/python2.7/site-packages ->add at ~/.bashrc file
-
-
+3. export PYTJONPATH=${PYTHONPATH}:~/pynaoqi/lib/python2.7/site-packages  # add at ~/.bashrc file, pynaoqi will be change for version!!!
 
 
 #  Error solution
