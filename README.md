@@ -8,24 +8,24 @@
 
 #  require
 
->##  depthimage_to_laserscan
+>##  depthimage_to_laserscan(git clone)
 https://github.com/ros-perception/depthimage_to_laserscan
 
->##  ira_laser_tools
+>##  ira_laser_tools(git clone)
 https://github.com/iralabdisco/ira_laser_tools
 
->##  ros_navigation
+>##  ros_navigation(sudo apt install ros-melodic-navigation)
 https://github.com/ros-planning/navigation
 
->##  ros_gmapping
+>##  ros_gmapping(sudo apt install ros-melodic-gmapping)
 
 https://github.com/ros-perception/slam_gmapping
 
->##  ros_openslam gmapping
+>##  ros_openslam gmapping(sudo apt install ros-melodic-openslam_gmapping)
 
 https://github.com/ros-perception/openslam_gmapping
 
->##  naoqi_driver
+>##  naoqi_driver(git clone)
 
 https://github.com/ros-naoqi/naoqi_driver
 
