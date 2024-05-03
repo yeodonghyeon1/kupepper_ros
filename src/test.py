@@ -14,6 +14,7 @@ import time
 import threading
 from geometry_msgs.msg import Twist
 import keyboard
+import numpy as np
 #2024-02-24T060328.807Z.explo
 
 
@@ -36,13 +37,21 @@ class testPepper:
         self.tts_service = self.session.service("ALAnimatedSpeech")
         self.autolife_service = self.session.service("ALAutonomousLife")
         self.posture_service = self.session.service("ALRobotPosture")
-        self.motion_service.setOrthogonalSecurityDistance(0.2)
+        self.motion_service.setOrthogonalSecurityDistance(2)
         self.voice_speed = 100
         self.voice_shape = 100
-        self.autolife_service.setState('disabled')
+        self.msg = LaserScan()
+        self.msg.header.frame_id = 'base_footprint'
+        self.msg.angle_min = -np.pi
+        self.msg.angle_max = np.pi
+        self.msg.angle_increment = 1./np.pi
+        self.msg.ranges = -1*np.ones(360)
+        # self.autolife_service.setState('disabled')
         self.posture_service.goToPosture("Stand", 3.0)
-        thread3 = threading.Thread(target=self.test)
+        thread3 = threading.Thread(target=self.head)
         thread3.start()
+
+        
     def say(self, text, bodylanguage="contextual"):
         """Animated say text"""
         configuration = {"bodyLanguageMode":bodylanguage}
@@ -59,13 +68,14 @@ class testPepper:
         
         rate = rospy.Rate(10) # 10hz
         self.pub_laser = rospy.Publisher('/base_scan', LaserScan, queue_size=100)
-        self.pub_laser2 = rospy.Publisher('/scan', LaserScan, queue_size=100)
 
         self.pub_imu = rospy.Publisher('/imu', Imu, queue_size=100)
         self.cmd_vel_sub = rospy.Subscriber('/turtle1/cmd_vel', Twist, self.cmd_vel_callback) 
         rospy.Subscriber('/naoqi_driver/imu/base', Imu, self.callback)
         rospy.Subscriber('/naoqi_driver/laser', LaserScan, self.callback2)
+        rospy.Subscriber('/scan', LaserScan, self.callback3)
 
+        
         while not rospy.is_shutdown():
             # hello_str = "hello world %s" % rospy.get_time()
             # rospy.loginfo(hello_str) 
@@ -82,6 +92,10 @@ class testPepper:
         self.pub_laser.publish(self.data_laser)
         # self.pub_laser2.publish(self.data_laser)
 
+    def callback3(self, data):
+        self.pub_laser.publish(data)
+        # self.pub_laser2.publish(self.data_laser)
+
 
     def cmd_vel_callback(self, data):
         rospy.loginfo(data)
@@ -92,11 +106,11 @@ class testPepper:
         # self.navigation_service.navigateTo(x,y)
 
 
-    def test(self):
+    def head(self):
         while True:
             self.motion_service.setStiffnesses("Head",1.0)
             self.motion_service.setAngles("Head",[0.,0.],0.05)
-            time.sleep(2)
+            time.sleep(1)
 
 
 
