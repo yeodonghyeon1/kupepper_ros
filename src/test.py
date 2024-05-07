@@ -46,7 +46,7 @@ class testPepper:
         self.msg.angle_max = np.pi
         self.msg.angle_increment = 1./np.pi
         self.msg.ranges = -1*np.ones(360)
-        # self.autolife_service.setState('disabled')
+        self.autolife_service.setState('disabled') #off
         self.posture_service.goToPosture("Stand", 3.0)
         thread3 = threading.Thread(target=self.head)
         thread3.start()

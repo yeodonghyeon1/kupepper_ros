@@ -1,9 +1,11 @@
 <launch>
   <arg name="use_map_topic"   default="true"/>
   <arg name="first_map_only"   default="false"/>
+  <!-- <arg name="scan_topic"      default="scan_merged"/> -->
   <arg name="scan_topic"      default="base_scan"/> 
-  <arg name="initial_pose_x"  default="0.0"/>
-  <arg name="initial_pose_y"  default="0.0"/>
+
+  <arg name="initial_pose_x"  default="0.7"/>
+  <arg name="initial_pose_y"  default="1.53"/>
   <arg name="initial_pose_a"  default="0.0"/>
   <arg name="odom_frame_id"   default="odom"/>
   <arg name="base_frame_id"   default="base_footprint"/>
@@ -36,7 +38,7 @@
     <param name="laser_lambda_short"        value="0.1"/>
     <param name="laser_model_type"          value="likelihood_field"/>
     <!-- <param name="laser_model_type" value="beam"/> -->
-    <param name="laser_likelihood_max_dist" value="2.0"/>
+    <param name="laser_likelihood_max_dist" value="1.0"/>
     <param name="update_min_d"              value="0.25"/> <!-- 필터 오차를 수행하기 전 변환 이동--> <!--0.25-->
     <param name="update_min_a"              value="0.2"/> <!-- 필터 오차를 수행하기 전 회전 이동--> <!--0.2 -->
     <param name="odom_frame_id"             value="$(arg odom_frame_id)"/> 
