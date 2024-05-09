@@ -7,7 +7,7 @@
 
   <!-- <param name="/use_sim_time" value="true"/> -->
 
-
+`
  <!-- Run the map server --> 
    <node pkg="map_server" name="map_server" type="map_server" args="$(find kupepper_ros)/map/2024_05_07/map.yaml"/>
 
@@ -24,7 +24,7 @@
 
 
  <!--- Run AMCL --> 
-    <include file="$(find kupepper_ros)/launch/amcl_test.launch" />
+    <include file="$(find kupepper_ros)/launch/amcl_test.launch" output="screen"/>
 
  <!--- Run qi libarary & control --> 
    <node pkg="kupepper_ros" type="test.py"  name="kupepper_ros">

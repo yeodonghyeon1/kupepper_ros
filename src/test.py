@@ -37,7 +37,7 @@ class testPepper:
         self.tts_service = self.session.service("ALAnimatedSpeech")
         self.autolife_service = self.session.service("ALAutonomousLife")
         self.posture_service = self.session.service("ALRobotPosture")
-        self.motion_service.setOrthogonalSecurityDistance(2)
+        self.motion_service.setOrthogonalSecurityDistance(1)
         self.voice_speed = 100
         self.voice_shape = 100
         self.msg = LaserScan()
@@ -50,7 +50,9 @@ class testPepper:
         self.posture_service.goToPosture("Stand", 3.0)
         thread3 = threading.Thread(target=self.head)
         thread3.start()
-
+        self.x = 0
+        self.y = 0
+        self.w = 0
         
     def say(self, text, bodylanguage="contextual"):
         """Animated say text"""
@@ -68,12 +70,14 @@ class testPepper:
         
         rate = rospy.Rate(10) # 10hz
         self.pub_laser = rospy.Publisher('/base_scan', LaserScan, queue_size=100)
+        self.pub_odom = rospy.Publisher('/odom', Odometry, queue_size=100)
 
-        self.pub_imu = rospy.Publisher('/imu', Imu, queue_size=100)
+        # self.pub_imu = rospy.Publisher('/imu', Imu, queue_size=100)
         self.cmd_vel_sub = rospy.Subscriber('/turtle1/cmd_vel', Twist, self.cmd_vel_callback) 
-        rospy.Subscriber('/naoqi_driver/imu/base', Imu, self.callback)
+        # rospy.Subscriber('/naoqi_driver/imu/base', Imu, self.callback)
         rospy.Subscriber('/naoqi_driver/laser', LaserScan, self.callback2)
         rospy.Subscriber('/scan', LaserScan, self.callback3)
+        # rospy.Subscriber('/naoqi_driver/odom', Odometry, self.callback4)
 
         
         while not rospy.is_shutdown():
@@ -84,8 +88,8 @@ class testPepper:
     def callback(self, data):
         # rospy.loginfo(rospy.get_caller_id() + 'I heard %s', data)
         self.data_imu = data
-        # self.pub_imu.publish(self.data_imu)
-
+        self.pub_imu.publish(self.data_imu)
+        
         pass
     def callback2(self, data):
         self.data_laser =data
@@ -96,13 +100,31 @@ class testPepper:
         self.pub_laser.publish(data)
         # self.pub_laser2.publish(self.data_laser)
 
+    def callback4(self, data):
+        self.pub_odom.publish(data)
+        # self.pub_laser2.publish(self.data_laser)
 
     def cmd_vel_callback(self, data):
         rospy.loginfo(data)
         x = data.linear.x
         y = data.linear.y
         w = data.angular.z
-        self.motion_service.move(x,y,w)
+
+        if x != self.x:
+            self.motion_service.stopMove()
+        elif y != self.y:
+            self.motion_service.stopMove()
+        elif w != self.w:
+            self.motion_service.stopMove()
+        else:
+            pass
+
+        self.x = x
+        self.y = y
+        self.w = w
+        self.motion_service.move(x*0.02,y*0.02,w*0.1)
+        # self.motion_service.move(x,y,w)
+
         # self.navigation_service.navigateTo(x,y)
 
 
