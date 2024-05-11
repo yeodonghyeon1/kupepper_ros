@@ -3,7 +3,6 @@
 # 클라이언트
 import socket, threading
 import g4f
-#client = OpenAI(api_key="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")
 
 server_ip = '192.168.112.1' 
 server_port = 3333 
