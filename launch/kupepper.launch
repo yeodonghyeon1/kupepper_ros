@@ -24,16 +24,16 @@
 
 
  <!--- Run AMCL --> 
-    <include file="$(find kupepper_ros)/launch/amcl_kupepper.launch" output="screen"/>
+    <include file="$(find kupepper_ros)/launch/amcl_kupepper.launch"/>
 
  <!--- Run qi libarary & control --> 
-   <node pkg="kupepper_ros" type="main.py"  name="kupepper_ros">
+   <node pkg="kupepper_ros" type="main.py"  name="kupepper_ros" output="screen">
     <param name="pepper_ip" value="$(arg ip)"/>
     <param name="pepper_port" value="$(arg port)"/>
    </node>
 
  <!--- Run move_base --> 
-   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+   <node pkg="move_base" type="move_base" respawn="false" name="move_base">
     <rosparam file="$(find kupepper_ros)/yaml2/costmap_common_params2.yaml" command="load" ns="global_costmap" /> 
     <rosparam file="$(find kupepper_ros)/yaml2/costmap_common_params2.yaml" command="load" ns="local_costmap" />
     <rosparam file="$(find kupepper_ros)/yaml2/local_costmap_params.yaml" command="load" />

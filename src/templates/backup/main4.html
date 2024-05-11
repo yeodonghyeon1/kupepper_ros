@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="/favicon.ico" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#000000" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter%3A500%2C600%2C700"/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro%3A500%2C600%2C700"/>
+<title>좌우 1:2 비율 레이아웃</title>
+<style>
+
+
+/* body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+} */    
+
+
+html {
+	font-size:62.5%;
+}
+* {
+	margin: 0;
+	padding: 0;
+}
+ul, li {
+	list-style: none;
+}
+input {
+	border: none;
+}
+body {
+  width: 128rem;
+}
+
+.frame-1-KEo {
+  box-sizing: border-box;
+  padding: 22.1rem 1.8rem 1.1rem 1.8rem;
+  overflow: hidden;
+  flex-direction: column;
+  width: 100%;
+  position: relative;
+  align-items: center;
+  display: flex;
+  background-color: #ffffff;
+}
+  .pepper-zVM {
+    color: #144a8a;
+    flex-shrink: 0;
+    margin: 0rem 0rem 1.4rem 0.8rem;
+    font-size: 8rem;
+    line-height: 1.2125;
+    letter-spacing: 0.08rem;
+    font-weight: 700;
+    font-family: Inter, 'Source Sans Pro';
+    white-space: nowrap;
+  }
+  .ai--ZRy {
+    font-family: Inter, 'Source Sans Pro';
+    font-weight: 500;
+    line-height: 1.2125;
+    letter-spacing: 0.028rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin: 0rem 1.7rem 9.4rem 0rem;
+    font-size: 2.8rem;
+    color: #144a8a;
+  }
+  .auto-group-xars-EHD {
+    white-space: nowrap;
+    background-color: #0bb7ff;
+    border-radius: 3rem;
+    flex-shrink: 0;
+    line-height: 1.2125;
+    color: #ffffff;
+    font-family: Inter, 'Source Sans Pro';
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0.4rem 0.4rem rgba(0, 0, 0, 0.25);
+    width: calc(100% - 89.5rem);
+    letter-spacing: 0.04rem;
+    display: flex;
+    margin: 0rem 44.7rem 17.6rem 44.8rem;
+    font-size: 4rem;
+    height: 9.6rem;
+    font-weight: 600;
+  }
+  .auto-group-hsr5-9BD{
+    margin-right: 102.6rem;
+    width: calc(100% - 102.6rem);
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+    .logo01jpg-1-gS3 {
+      flex-shrink: 0;
+      margin-right: 1.3rem;
+      width: 4.5rem;
+      height: 5.7rem;
+      object-fit: cover;
+      vertical-align: top;
+    }
+    .kyungnam-univ-bZ1 {
+      margin-top: 0.9rem;
+      line-height: 1.2125;
+      letter-spacing: 0.021rem;
+      font-family: Inter, 'Source Sans Pro';
+      flex-shrink: 0;
+      font-size: 2.1rem;
+      font-weight: 500;
+      color: #585858;
+      white-space: nowrap;
+    }
+  
+
+
+
+
+.container {
+    display: flex;
+    height: 100%;
+}
+
+.left-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.top-panel, .bottom-panel {
+    flex: 1;
+    background-color: red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.right-panel {
+    flex: 2;
+    background-color: blue;
+}
+
+.my_btn {
+    background-color: skyblue;
+    color: white;
+    border: none;
+    font-size: 3vw;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+</style>
+</head>
+<body>
+
+    <!-- <div class="container">
+        <div class="left-panel">
+            <div class="top-panel">
+                <form action="/test1" method="POST">
+                    <button type="submit" value="Button" class="my_btn">페이지 넘기기1</button>
+                </form>
+            </div>
+            <div class="bottom-panel">
+                <form action="/test2" method="POST">
+                    <button type="submit" value="Button" class="my_btn">페이지 넘기기2</button>
+                </form>
+            </div>
+        </div>
+        <div class="right-panel">
+        
+        </div>
+    </div> -->
+
+<!--맹근거-->
+<!-- <div class="wrap">
+    <a href="#pop_info_1" class="btn_open">김진호 교수연구실</a>
+    <a href="#pop_info_2" class="btn_open">정민수 교수연구실</a>
+  
+  
+    <div id="pop_info_1" class="pop_wrap" style="display:none;">
+      <div class="pop_inner">
+        <p class="dsc">김진호 010-1234-5678</p>
+        <button type="button" class="btn_close">닫기</button>
+      </div>
+    </div>
+  
+    <div id="pop_info_2" class="pop_wrap" style="display:none;">
+      <div class="pop_inner">
+        <p class="dsc">정민수 010-1212-4545</p>
+        <button type="button" class="btn_close">닫기</button>
+      </div>
+    </div>
+  </div> -->
+
+
+<!-- <script>
+    // 왼쪽 패널의 크기를 측정하여 버튼의 크기를 조정하는 함수
+    function adjustButtonSize() {
+        var panels = document.querySelectorAll('.top-panel, .bottom-panel');
+        var buttons = document.querySelectorAll('.my_btn');
+
+        panels.forEach(function(panel, index) {
+            var button = buttons[index];
+            var panelWidth = panel.offsetWidth;
+            var panelHeight = panel.offsetHeight;
+
+            button.style.width = panelWidth + 'px';
+            button.style.height = panelHeight + 'px';
+        });
+    }
+
+    // 페이지 로드시 및 창 크기 변경시 버튼 크기 조정
+    window.addEventListener('load', adjustButtonSize);
+    window.addEventListener('resize', adjustButtonSize);
+</script> -->
+  <div class="frame-1-KEo">
+      <p class="pepper-zVM">Pepper</p>
+      <p class="ai--ZRy">ai 산업 머시깽이</p>
+      <!-- <div class="auto-group-xars-EHD">탭하여 시작하기</div> -->
+      <from action="/start" method="POST">
+        <button type= "submit" value="Button" class="auto-group-xars-EHD">탭하여 시작하기</button>
+      </from>
+      <div class="auto-group-hsr5-9BD">
+        <img class="logo01jpg-1-gS3" src="{{url_for('static', filename='IMG/logo01jpg.png') }}">
+        <!-- <img class="logo01jpg-1-gS3" src="https://i.namu.wiki/i/jcc64G_f4NeCguv1q4M3yuMz8-Ux1yCfQr-XA0LFp4FClRRvOmnI6Wtuc7zFsa8-wekpHrwidGZNL1WAJj7B3w.svg"/> -->
+        <p class="kyungnam-univ-bZ1">Kyungnam Univ</p>
+      </div>
+    </div>
+
+    
+</body>
+</html>
