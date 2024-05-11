@@ -2,6 +2,7 @@
 
     <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen">
       <remap from="scan" to="/naoqi_driver/laser"/> <!-- 사용할 Laser 토픽 이름-->
+      <remap from="odom" to="/naoqi_driver/odom"/>
       <param name="map_update_interval" value="0.1"/> <!--지도를 업데이트할 때까지 대기할 시간 (너무 크면 빠른 업데이트 불가)-->
       <param name="maxUrange" value="80.0"/> <!--Laser의 최대 사용 가능 범위를 설정-->
       <param name="sigma" value="0.05"/>

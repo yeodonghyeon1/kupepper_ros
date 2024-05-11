@@ -2,7 +2,7 @@
   <arg name="use_map_topic"   default="true"/>
   <arg name="first_map_only"   default="false"/>
   <!-- <arg name="scan_topic"      default="scan_merged"/> -->
-  <arg name="scan_topic"      default="base_scan"/> 
+  <arg name="scan_topic"      default="naoqi_driver/laser"/> 
 
   <arg name="initial_pose_x"  default="0.7"/>
   <arg name="initial_pose_y"  default="1.53"/>

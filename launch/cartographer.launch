@@ -5,10 +5,10 @@
          -configuration_directory $(find kupepper_ros)/config 
          -configuration_basename pr2.lua" 
       output="screen">
-      <!-- <remap from="scan" to="naoqi_driver/laser"/> -->
-      <remap from="scan" to="base_scan"/>
-      <remap from="odom" to="naoqi_driver/odom"/>
-      <remap from="imu" to="naoqi_driver/imu/base" />
+      <remap from="scan" to="naoqi_driver/laser"/>
+      <!-- <remap from="scan" to="base_scan"/> -->
+      <remap from="odom" to="odom"/>
+      <!-- <remap from="imu" to="naoqi_driver/imu/base" /> -->
 
 
       

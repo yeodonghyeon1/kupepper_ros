@@ -122,8 +122,8 @@ class testPepper:
         self.x = x
         self.y = y
         self.w = w
-        self.motion_service.move(x*0.02,y*0.02,w*0.1)
-        # self.motion_service.move(x,y,w)
+        # self.motion_service.move(x*0.02,y*0.02,w*0.1)
+        self.motion_service.move(x*0.2,y*0.2,w*2)
 
         # self.navigation_service.navigateTo(x,y)
 
