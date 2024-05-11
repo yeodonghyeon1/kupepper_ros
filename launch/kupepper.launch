@@ -24,10 +24,10 @@
 
 
  <!--- Run AMCL --> 
-    <include file="$(find kupepper_ros)/launch/amcl_test.launch" output="screen"/>
+    <include file="$(find kupepper_ros)/launch/amcl_kupepper.launch" output="screen"/>
 
  <!--- Run qi libarary & control --> 
-   <node pkg="kupepper_ros" type="test.py"  name="kupepper_ros">
+   <node pkg="kupepper_ros" type="main.py"  name="kupepper_ros">
     <param name="pepper_ip" value="$(arg ip)"/>
     <param name="pepper_port" value="$(arg port)"/>
    </node>
