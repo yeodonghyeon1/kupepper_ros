@@ -24,6 +24,7 @@ from flask import Flask, render_template, redirect, url_for, request
 import socket
 import speech_recognition as sr
 import os
+import numpy
 
 #2024-02-24T060328.807Z.explo
 tmp_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tmp_files")
@@ -164,8 +165,11 @@ class RosKuPepper:
         self.say("hi my name is pepper.")
 
         #GUI
-        self.window = Tkinter.Tk()
-        self.base_interface_robot()
+        # self.window = Tkinter.Tk()
+        # self.interface_thread = threading.Thread(target=self.base_interface_robot)
+        # self.interface_thread.daemon = True
+        # self.interface_thread.start()
+        # self.base_interface_robot()
         self.result_map= 0 
         self.resolution=0 
         self.offset_x =0 
@@ -314,7 +318,7 @@ class RosKuPepper:
 
         self.event.clear()
 
-   
+
 
 
     def talk_pepper(self):
@@ -416,6 +420,7 @@ class RosKuPepper:
 
 
         #마지막에 있어야함
+
         self.window.mainloop()
 
     def exploration_mode_button_push(self, text):

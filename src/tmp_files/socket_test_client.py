@@ -60,7 +60,7 @@ while True:
     messages=messages,
     )
     chat_response = completion
-    print(f'GPT msg: {chat_response}')
+    print('GPT msg: {}'.format(chat_response))
     msg2 = chat_response 
     socket.sendall(msg2.encode(encoding='utf-8'))
     

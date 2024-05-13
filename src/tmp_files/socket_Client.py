@@ -3,7 +3,9 @@
 # 클라이언트
 import socket, threading
 import openai
-openai.api_key = ""
+openai.api_key = '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'
+#client = OpenAI(api_key="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")
+# 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
 server_ip = '192.168.122.56' 
 server_port = 3333 
 messages = [{"role": "system", "content": "니 이름은 pepper이고 너는 경남대학교 1공학관 8층에 위치해있다."},#""이걸로 줄 바꿔도 한줄로 인식 가능
