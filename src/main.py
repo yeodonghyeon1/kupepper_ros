@@ -25,7 +25,7 @@ import socket
 import speech_recognition as sr
 import os
 import numpy
-
+import subprocess
 #2024-02-24T060328.807Z.explo
 tmp_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tmp_files")
 print("tmp_path:", tmp_path)
@@ -163,6 +163,7 @@ class RosKuPepper:
         self.base_thread.daemon = True
         self.base_thread.start()
         self.say("hi my name is pepper.")
+        subprocess.call(['python3', '{}/socket_Client.py'.format(tmp_path), "{}".format(web_host)])
 
         #GUI
         # self.window = Tkinter.Tk()
@@ -355,6 +356,7 @@ class RosKuPepper:
         try:
             msg2 = r.recognize_google(audio, language='ko-KR') #음성을 변환
             print("send message!!!!~~~")
+            print(msg2)
             self.client_soc.sendall(msg2.encode(encoding='utf-8'))
             data = self.client_soc.recv(1000)#메시지 받는 부분
             self.say(data)
@@ -574,7 +576,6 @@ class RosKuPepper:
             server_socket.listen(1)
 
             print('echo server start')
-
     #  클라이언트 접속 기다리며 대기 
             self.client_soc, addr = server_socket.accept()
             print('connected client addr:', addr)
@@ -1965,7 +1966,7 @@ class RosKuPepper:
 
 def main():
     pepper = RosKuPepper(rospy.get_param('~pepper_ip'), rospy.get_param('~pepper_port'))
-    # pepper = RosKuPepper("192.168.214.51", "9559")
+    # pepper = RosKuPepper("192.168.0.125", "9559")
     pepper.talker()
 
 
@@ -1980,9 +1981,4 @@ if __name__ == "__main__":
     
     # thread = threading.Thread(target=pepper.base)
     # thread.start()
-
-
     
-
-
-

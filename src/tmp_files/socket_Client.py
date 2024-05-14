@@ -3,10 +3,10 @@
 # 클라이언트
 import socket, threading
 import openai
-openai.api_key = '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'
-#client = OpenAI(api_key="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")
-# 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
-server_ip = '192.168.122.56' 
+import sys
+openai.api_key = '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'
+server_ip = sys.argv[1]
+# server_ip = '192.168.122.56' 
 server_port = 3333 
 messages = [{"role": "system", "content": "니 이름은 pepper이고 너는 경남대학교 1공학관 8층에 위치해있다."},#""이걸로 줄 바꿔도 한줄로 인식 가능
             {"role": "system", "content": "답변할 때 무조건 줄 띄우지 말고 한 문단으로 답변해 줘."},
@@ -61,6 +61,7 @@ while True:
     messages.append({"role":"user", "content":content})
     completion = openai.ChatCompletion.create(
         model="gpt-3.5-turbo", messages=messages
+        # model="gpt-4o", messages=messages
     )
     chat_response = completion.choices[0].message
     print('GPT msg: {chat_response}')

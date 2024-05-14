@@ -4,7 +4,7 @@
 import socket, time
 import speech_recognition as sr
 
-host = '192.168.112.1' 
+host = '192.168.122.56' 
 port = 3333 
 
 # 서버소켓 오픈/ netstat -a로 포트 확인
@@ -23,7 +23,7 @@ client_soc, addr = server_socket.accept()
 print('connected client addr:', addr)
 
 r = sr.Recognizer()
-kr_audio = sr.AudioFile('C:/KUPepper/pepper/tmp_files/pepper_test.wav')#파일 경로
+kr_audio = sr.AudioFile('./pepper_test.wav')#파일 경로
 
 with kr_audio as source:
     audio = r.record(source)
