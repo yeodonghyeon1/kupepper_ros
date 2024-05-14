@@ -4,7 +4,7 @@
 import socket, threading
 import openai
 import sys
-openai.api_key = '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'
+openai.api_key = ''
 server_ip = sys.argv[1]
 # server_ip = '192.168.122.56' 
 server_port = 3333 

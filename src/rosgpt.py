@@ -13,7 +13,7 @@ from sensor_msgs.msg._Imu import Imu
 from geometry_msgs.msg import Twist
 
 
-openai.api_key = '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'
+openai.api_key = ''
 
 
 messages = [{"role": "system", "content": "니 이름은 pepper이고 너는 경남대학교 1공학관 8층에 위치해있다."},#""이걸로 줄 바꿔도 한줄로 인식 가능
