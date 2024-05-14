@@ -6,7 +6,6 @@ import openai
 import sys
 openai.api_key = ''
 server_ip = sys.argv[1]
-# server_ip = '192.168.122.56' 
 server_port = 3333 
 messages = [{"role": "system", "content": "니 이름은 pepper이고 너는 경남대학교 1공학관 8층에 위치해있다."},#""이걸로 줄 바꿔도 한줄로 인식 가능
             {"role": "system", "content": "답변할 때 무조건 줄 띄우지 말고 한 문단으로 답변해 줘."},

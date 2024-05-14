@@ -13,7 +13,8 @@ from sensor_msgs.msg._MultiEchoLaserScan import MultiEchoLaserScan
 from sensor_msgs.msg._Imu import Imu
 import time
 import threading
-from geometry_msgs.msg import Twist
+from geometry_msgs.msg import Twist, PoseStamped
+from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal, MoveBaseFeedback, MoveBaseResult
 import keyboard
 import numpy as np
 import Tkinter
@@ -26,6 +27,8 @@ import speech_recognition as sr
 import os
 import numpy
 import subprocess
+import actionlib
+
 #2024-02-24T060328.807Z.explo
 tmp_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tmp_files")
 print("tmp_path:", tmp_path)
@@ -163,6 +166,11 @@ class RosKuPepper:
         self.base_thread.daemon = True
         self.base_thread.start()
         self.say("hi my name is pepper.")
+
+        # self.pepper_dwa_move(-2.27, 6.89, 0.727, 0.686) #pepper move x, y, w, h
+
+
+
         subprocess.call(['python3', '{}/socket_Client.py'.format(tmp_path), "{}".format(web_host)])
 
         #GUI
@@ -589,6 +597,21 @@ class RosKuPepper:
         while True:
             self.say("hi")
             time.sleep(1)
+
+    def pepper_dwa_move(self, x, y, z, w):
+        client = actionlib.SimpleActionClient('/move_base', MoveBaseAction)
+        rospy.loginfo("Waiting for move base server")
+        client.wait_for_server()
+
+        goal = MoveBaseGoal()
+        goal.target_pose.header.frame_id = 'map' 
+        goal.target_pose.pose.position.x = x
+        goal.target_pose.pose.position.y = y
+        goal.target_pose.pose.orientation.z = z
+        goal.target_pose.pose.orientation.w = w
+        client.send_goal(goal)
+        client.wait_for_result() # 만약 목적지를 여러 좌표를 경유한 뒤 가고 싶으면 추가로 넣으면 됨
+
 
     def talker(self):
         

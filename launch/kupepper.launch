@@ -9,7 +9,7 @@
 
 `
  <!-- Run the map server --> 
-   <node pkg="map_server" name="map_server" type="map_server" args="$(find kupepper_ros)/map/test_map3.yaml"/>
+   <node pkg="map_server" name="map_server" type="map_server" args="$(find kupepper_ros)/map/test_map4.yaml"/>
 
  <!-- Run the naoqi-driver -->   
     <include file="$(find naoqi_driver)/launch/naoqi_driver.launch" >
