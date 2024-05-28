@@ -3,8 +3,9 @@
 # 클라이언트
 import socket, threading
 import openai
+from openai import OpenAI
+
 import sys
-openai.api_key = ''
 server_ip = sys.argv[1]
 server_port = 3333 
 messages = [{"role": "system", "content": "니 이름은 pepper이고 너는 경남대학교 1공학관 8층에 위치해있다."},#""이걸로 줄 바꿔도 한줄로 인식 가능
@@ -49,6 +50,7 @@ messages = [{"role": "system", "content": "니 이름은 pepper이고 너는 경
           
 socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 socket.connect((server_ip, server_port))
+client = OpenAI(api_key="")
 
 # /end 입력될 때 까지 계속해서 서버에 패킷을 보냄
 while True:
@@ -58,15 +60,15 @@ while True:
     #받은 메시지 GPT한테 전달
     content = msg
     messages.append({"role":"user", "content":content})
-    completion = openai.ChatCompletion.create(
+    completion = client.chat.completions.create(
         model="gpt-3.5-turbo", messages=messages
         # model="gpt-4o", messages=messages
     )
     chat_response = completion.choices[0].message
     print('GPT msg: {chat_response}')
-    msg2 = chat_response 
-    print(msg2["content"])
-    socket.sendall(msg2["content"].encode(encoding='utf-8'))
+    msg2 = chat_response.content
+    print(msg2)
+    socket.sendall(msg2.encode(encoding='utf-8'))
     
     if msg == '/end':
         break

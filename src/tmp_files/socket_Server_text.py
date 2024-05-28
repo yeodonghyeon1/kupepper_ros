@@ -1,6 +1,8 @@
+# -*- coding: utf-8 -*-
+
 import socket, time
 
-host = '192.168.112.1' 
+host = '192.168.122.56' 
 port = 3333 
 
 # 서버소켓 오픈/ netstat -a로 포트 확인
@@ -9,7 +11,7 @@ server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 server_socket.bind((host, port))
 
 # 클라이언트 접속 준비 완료
-server_socket.listen()
+server_socket.listen(1)
 
 print('echo server start')
 
@@ -20,11 +22,14 @@ print('connected client addr:', addr)
 
 # 클라이언트가 보낸 패킷 계속 받아 에코메세지 돌려줌
 while True:
-    msg2 = input('msg:') 
+    msg2 = input() 
     client_soc.sendall(msg2.encode(encoding='utf-8')) 
     data = client_soc.recv(1000)#메시지 받는 부분
-    msg = data.decode() 
-    print('recv msg:', msg)
+    msg = data.decode("utf-8") 
+    split_msg = msg.split("-")
+    print(split_msg[1])
+    for i in split_msg:
+        print(i)
     if msg == '/end':
         break
 

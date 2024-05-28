@@ -28,7 +28,7 @@ import os
 import numpy
 import subprocess
 import actionlib
-
+import datetime
 #2024-02-24T060328.807Z.explo
 tmp_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tmp_files")
 print("tmp_path:", tmp_path)
@@ -94,6 +94,7 @@ class RosKuPepper:
         ssh.connect(hostname=ip_address, username="nao", password="Han343344^^")
         self.scp = SCPClient(ssh.get_transport())
 
+
         self.motion_service = self.session.service("ALMotion")
         self.navigation_service = self.session.service("ALNavigation")
         self.memory_service = self.session.service("ALMemory")
@@ -140,9 +141,13 @@ class RosKuPepper:
         self.voice_speed = 100
         self.voice_shape = 100
 
+        try:
+            self.dialog_service.unsubscribe("my_dialog") #start dialog engine
+            self.audio_recorder.stopMicrophonesRecording()
+        except:
+            pass
 
-
-        self.motion_service.setOrthogonalSecurityDistance(1)
+        self.motion_service.setOrthogonalSecurityDistance(2)
         self.voice_speed = 100
         self.voice_shape = 100
         self.msg = LaserScan()
@@ -167,11 +172,11 @@ class RosKuPepper:
         self.base_thread.start()
         self.say("hi my name is pepper.")
 
-        # self.pepper_dwa_move(-2.27, 6.89, 0.727, 0.686) #pepper move x, y, w, h
+        # self.pepper_dwa_move(2.35, -0.319, 0.47, 0.88) #pepper move x, y, w, h
 
 
 
-        subprocess.call(['python3', '{}/socket_Client.py'.format(tmp_path), "{}".format(web_host)])
+        subprocess.call(['python3', '{}/socket_Client_version2.py'.format(tmp_path), "{}".format(web_host)])
 
         #GUI
         # self.window = Tkinter.Tk()
@@ -226,7 +231,6 @@ class RosKuPepper:
         loaded_topic=self.dialog_service.loadTopicContent(topicContent2) #load topic content
         self.dialog_service.activateTopic(loaded_topic) #activate topic
         
-
         self.dialog_service.subscribe("my_dialog") #start dialog engine
         # self.load_map_and_localization()
 
@@ -259,7 +263,7 @@ class RosKuPepper:
                 if app.start == True:
                     if while_count == 0:
                         self.say("반갑습니다. 페퍼를 동작합니다")
-                        self.start_animation(np.random.choice(["Hey_1", "Hey_3", "Hey_4", "Hey_6"]))
+                        self.start_animation(np.random.choice(["Hey_1", "Hey_3", "Hey_4", "Hey_6"]), "hey")
                     self.stopThreadUntilOneTheEnd()
                     # self.status_print()
                     # self.base_move()
@@ -331,13 +335,12 @@ class RosKuPepper:
 
 
     def talk_pepper(self):
+        start_time = time.time()
         self.event.set()
-
         try:
             self.audio_recorder.stopMicrophonesRecording()
         except:
             pass
-    
         self.audio_recorder.startMicrophonesRecording("/home/nao/speech.wav", "wav", 48000, (0, 0, 1, 0))
         time.sleep(1)
         #여기서 endofprocess가 나올때까지 기다리는데 일정시간 지나면 끝내는 코드를 넣어야함
@@ -351,8 +354,9 @@ class RosKuPepper:
                 listenOffCount += 1
             if listenOffCount == 3:
                     self.audio_recorder.stopMicrophonesRecording()
-                    break  
-
+                    break 
+            if (time.time() - start_time) == 7:
+                break
         # self.robot.audio_service.playFile("/home/nao/speech.wav") #mp3파일 재생 확인용
         self.download_file("speech.wav")
         r = sr.Recognizer()
@@ -367,7 +371,8 @@ class RosKuPepper:
             print(msg2)
             self.client_soc.sendall(msg2.encode(encoding='utf-8'))
             data = self.client_soc.recv(1000)#메시지 받는 부분
-            self.say(data)
+            self.pepper_behavior(data)
+            # self.say(data)
             print(data)
             # self.talk_pepper()#또다시 인식
         except:
@@ -377,7 +382,38 @@ class RosKuPepper:
             self.event.clear()
             time.sleep(0.1)
 
+    def pepper_behavior(self,data):
+        data = data.split("-")
+        for i in range(1, len(data)):
+            if data[i] == "BMG":
+                if data[i+1] != "None":
+                    self.say(data[i+1])
+            elif data[i] == "FMG":
+                if data[i+1] != "None":
+                    if data[i+1] == "dance":
+                        pass
+                    elif "navi" in data[i+1]:
+                        move = data[i+1].split("_")
+                        print(move)
+                        self.pepper_dwa_move(float(move[1]), float(move[2]),0.47, 0.88)
 
+                    elif data[i+1] == "clap":
+                        pass
+                    elif data[i+1] == "rock_paper_scissors":
+                        pass
+                    elif data[i+1] == "stop_behavior":
+                        pass
+                    elif data[i+1] == "happy":
+                        self.start_animation(np.random.choice(["Laugh_1", "Laugh_2", "Laugh_3", "Hysterical_1"]), "happy")
+                    elif data[i+1] == "angry":
+                        self.start_animation(np.random.choice(["Angry_1", "Angry_2", "Angry_3"]), "angry")
+                    elif data[i+1] == "sad":
+                        self.start_animation(np.random.choice(["Sad_1"]), "sad")
+                    elif data[i+1] == "nothing":
+                        pass
+            elif data[i] == "TMG":
+                if data[i+1] != "None":
+                    self.say(data[i+1])
 
     def set_vocabulary(self):
     #setVocabulary
@@ -612,7 +648,29 @@ class RosKuPepper:
         client.send_goal(goal)
         client.wait_for_result() # 만약 목적지를 여러 좌표를 경유한 뒤 가고 싶으면 추가로 넣으면 됨
 
+        # goal.target_pose.header.frame_id = 'map' 
+        # goal.target_pose.pose.position.x = 31.4435647013
 
+        # goal.target_pose.pose.position.y = 7.18209944068
+
+        # goal.target_pose.pose.orientation.z = -0.651438909894
+
+        # goal.target_pose.pose.orientation.w = 0.758701091785
+
+        # client.send_goal(goal)
+        # client.wait_for_result() # 만약 목적지를 여러 좌표를 경유한 뒤 가고 싶으면 추가로 넣으면 됨
+
+        # goal.target_pose.header.frame_id = 'map' 
+        # goal.target_pose.pose.position.x = 20.0770619864
+
+        # goal.target_pose.pose.position.y = 18.0678581361
+
+        # goal.target_pose.pose.orientation.z = -0.998061572448
+
+        # goal.target_pose.pose.orientation.w = 0.0622342156826
+
+        # client.send_goal(goal)
+        # client.wait_for_result() # 만약 목적지를 여러 좌표를 경유한 뒤 가고 싶으면 추가로 넣으면 됨
     def talker(self):
         
         rate = rospy.Rate(10) # 10hz
@@ -892,7 +950,7 @@ class RosKuPepper:
     
     
     
-    def start_animation(self, animation):
+    def start_animation(self, animation, behavior):
         """
         Starts a animation which is stored on robot
 
@@ -913,9 +971,18 @@ class RosKuPepper:
                 self.speech_service.setAudioExpression(False)
                 self.speech_service.setVisualExpression(False)
 
-            animation_finished = self.animation_service.run("animations/[posture]/Gestures/" + animation, _async=True)
-            animation_finished.value()
-
+            if behavior == "hey":
+                animation_finished = self.animation_service.run("animations/[posture]/Emotions/Positive/" + animation, _async=True)
+                animation_finished.value()
+            elif behavior == "happy":
+                animation_finished = self.animation_service.run("animations/[posture]/Emotions/Positive/" + animation, _async=True)
+                animation_finished.value()
+            elif behavior == "angry":
+                animation_finished = self.animation_service.run("animations/[posture]/Emotions/Negative/" + animation, _async=True)
+                animation_finished.value()
+            elif behavior == "sad":
+                animation_finished = self.animation_service.run("animations/[posture]/Emotions/Negative/" + animation, _async=True)
+                animation_finished.value()
             return True
         except Exception as error:
             print(error)

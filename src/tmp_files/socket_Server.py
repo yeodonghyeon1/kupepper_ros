@@ -34,8 +34,11 @@ while True:
     print(r.recognize_google(audio, language='ko-KR'))
     client_soc.sendall(msg2.encode(encoding='utf-8')) 
     data = client_soc.recv(1000)#메시지 받는 부분
-    msg = data.decode()
-    print('recv msg:', msg)
+    msg = data.decode("utf-8")
+    split_msg = msg.split("-")
+    print(split_msg[1])
+    for i in split_msg:
+        print(i)
     msg=input('/end입력시 종료 :')
     if msg == '/end':
         break

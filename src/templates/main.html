@@ -1,117 +1,90 @@
-<!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>좌우 1:2 비율 레이아웃</title>
-<style>
-    body, html {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-    }
+          <head>
+            <meta charset="utf-8">
+          
+            <title>Html Generated</title>
+            <meta name="description" content="Figma htmlGenerator">
+            <meta name="author" content="htmlGenerator">
+            <link href="https://fonts.googleapis.com/css?family=Inter&display=swap" rel="stylesheet">
+            <link rel="stylesheet" href="{{url_for('static', filename='styles/styles.css') }}"/>
+            
+            <style>
+              /*
+                Figma Background for illustrative/preview purposes only.
+                You can remove this style tag with no consequence
+              */
+              body {background: #E5E5E5; }
+            </style>
+          
+          </head>
+          
+          <body>
+            <div class=e46_113>
+              <div  class="e46_5"></div>
+              <div  class="e46_6"></div>
+              <div  class="e46_7"></div>
+              <div  class="e46_8"></div>
+              <div  class="e46_9"></div>
+              <div  class="e46_10"></div>
+              <div  class="e46_11"></div>
 
-    .container {
-        display: flex;
-        height: 100%;
-    }
+              <div class=e55_5>
+                <div  class="e46_79"></div>
+                
 
-    .left-panel {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-    }
+              <button type="submit" value="Button"  class="e46_12"></button>
+              <span  class="e46_13">임베디드응용
+소프트웨어실습실</span></div>
 
-    .top-panel, .bottom-panel {
-        flex: 1;
-        background-color: red;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        position: relative;
-    }
+<button type="submit" value="Button" class=e46_216><div  class="e46_14"></div><span  class="e46_15">강의실(802)</span></button>
 
-    .right-panel {
-        flex: 2;
-        background-color: blue;
-    }
-
-    .my_btn {
-        background-color: skyblue;
-        color: white;
-        border: none;
-        font-size: 3vw;
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        left: 0;
-    }
-</style>
-</head>
-<body>
-
-    <div class="container">
-        <div class="left-panel">
-            <div class="top-panel">
-                <form action="/test1" method="POST">
-                    <button type="submit" value="Button" class="my_btn">지점 이동</button>
-                </form>
-            </div>
-            <div class="bottom-panel">
-                <form action="/test2" method="POST">
-                    <button type="submit" value="Button" class="my_btn">대화하기</button>
-                </form>
-            </div>
-        </div>
-        <div class="right-panel">
-            <img src="{{url_for('static', filename='assets/map.png') }}", width="1000", height="800">
-
-    </div>
-</div>
-
-<!--맹근거-->
-<div class="wrap">
-    <a href="#pop_info_1" class="btn_open">김진호 교수연구실</a>
-    <a href="#pop_info_2" class="btn_open">정민수 교수연구실</a>
-  
-  
-    <div id="pop_info_1" class="pop_wrap" style="display:none;">
-      <div class="pop_inner">
-        <p class="dsc">김진호 010-1234-5678</p>
-        <button type="button" class="btn_close">닫기</button>
-      </div>
-    </div>
-  
-    <div id="pop_info_2" class="pop_wrap" style="display:none;">
-      <div class="pop_inner">
-        <p class="dsc">정민수 010-1212-4545</p>
-        <button type="button" class="btn_close">닫기</button>
-      </div>
-    </div>
-  </div>
-
-
-<script>
-    // 왼쪽 패널의 크기를 측정하여 버튼의 크기를 조정하는 함수
-    function adjustButtonSize() {
-        var panels = document.querySelectorAll('.top-panel, .bottom-panel');
-        var buttons = document.querySelectorAll('.my_btn');
-
-        panels.forEach(function(panel, index) {
-            var button = buttons[index];
-            var panelWidth = panel.offsetWidth;
-            var panelHeight = panel.offsetHeight;
-
-            button.style.width = panelWidth + 'px';
-            button.style.height = panelHeight + 'px';
-        });
-    }
-
-    // 페이지 로드시 및 창 크기 변경시 버튼 크기 조정
-    window.addEventListener('load', adjustButtonSize);
-    window.addEventListener('resize', adjustButtonSize);
-</script>
-
-</body>
-</html>
+<button type="submit" value="Button" class=e46_215><div  class="e46_16"></div><span  class="e46_17">강의실(803)</span></button>
+<button type="submit" value="Button" class=e46_229><div  class="e46_18"></div><span  class="e46_19">강의실(801)</span></button>
+<button type="submit" value="Button" class=e46_214><div  class="e46_20"></div><span  class="e45_26">과학영재정보과학교실</span>
+<span  class="e46_21">홈네트웨크실습실</span></button>
+<button type="submit" value="Button" class=e46_213><div  class="e46_22"></div><span  class="e46_23">컴퓨터응용실습준비실</span></button>
+<button type="submit" value="Button" class=e46_212><div  class="e46_24"></div><span  class="e46_25">컴퓨터응용실습실</span></button>
+<button type="submit" value="Button" class=e46_211><div  class="e46_26"></div><span  class="e46_27">컴퓨터공학PBL실</span></button>
+<button type="submit" value="Button" class=e46_210><div  class="e46_28"></div><span  class="e46_29">소프트웨어 및 정보보안 PBL실</span></button>
+<button type="submit" value="Button" class=e46_208><div  class="e46_32"></div><span  class="e46_33">미래 
+인터넷 실습실</span></button>
+<button type="submit" value="Button" class=e46_221><div  class="e46_36"></div><span  class="e46_37">임베디드시스템실습실
+캡스톤디자인실</span></button>
+<button type="submit" value="Button" class=e46_231><div  class="e46_38"></div><span  class="e46_39">자바OS실습실</span></button>
+<button type="submit" value="Button" class=e46_230><div  class="e46_40"></div><span  class="e46_41">ABEEK자료
+보관실</span></button>
+<button type="submit" value="Button" class=e45_22><div  class="e46_42"></div><span  class="e46_43">컴퓨터네트워크
+실습준비실</span></button>
+<button type="submit" value="Button" class=e45_20><div  class="e46_44"></div><span  class="e46_45">실시간시스템
+통계분석자료실습실</span></button>
+<button type="submit" value="Button" class=e46_232><div  class="e46_46"></div><span  class="e46_47">시스템분석
+실습실</span></button>
+<button type="submit" value="Button" class=e45_24><div  class="e46_48"></div><span  class="e46_49">인터넷
+데이터베이스
+실습실</span></button>
+<button type="submit" value="Button" class=e46_228><div  class="e46_50"></div><span  class="e46_51">융합
+인공지능
+실습실</span></button>
+<div  class="e46_60"></div>
+<button type="submit" value="Button" class=e46_223><div  class="e46_71"></div><span  class="e46_72">양근석</span><span  class="e46_200">교수연구실</span></button>
+<button type="submit" value="Button" class=e46_224><div  class="e46_69"></div><span  class="e46_70">김진호
+</span><span  class="e46_204">교수연구실</span></button>
+<button type="submit" value="Button" class=e46_225><div  class="e46_67"></div><span  class="e46_68">정민수
+</span><span  class="e46_205">교수연구실</span></button>
+<button type="submit" value="Button" class=e46_226><div  class="e46_65"></div><span  class="e46_66">임현일
+</span><span  class="e46_206">교수연구실</span></button>
+<button type="submit" value="Button" class=e46_227><div  class="e46_63"></div><span  class="e46_64">석승준
+</span><span  class="e46_207">교수연구실</span></button>
+<button type="submit" value="Button" class=e46_209><div  class="e46_30"></div><span  class="e46_31">박미영</span><span  class="e45_11">교수연구실</span></button>
+<button type="submit" value="Button" class=e45_25><div  class="e46_61"></div><span  class="e46_62">황두영</span><span  class="e45_12">교수연구실</span></button>
+<button type="submit" value="Button" class=e45_23><div  class="e46_54"></div><span  class="e46_55">서쌍희</span><span  class="e45_13">교수연구실</span></button>
+<button type="submit" value="Button" class=e46_220><div  class="e46_56"></div><span  class="e46_57">이현동</span><span  class="e45_16">교수연구실</span></button>
+<button type="submit" value="Button" class=e46_219><div  class="e46_58"></div><span  class="e46_59">이기성</span><span  class="e45_17">교수연구실</span></button>
+<button type="submit" value="Button" class=e45_19><div  class="e46_52"></div><span  class="e46_53">임지언</span><span  class="e45_14">교수연구실</span></button>
+<button type="submit" value="Button" class=e45_18><div  class="e46_34"></div><span  class="e46_35">전하영</span><span  class="e45_15">교수연구실</span></button>
+<button type="submit" value="Button" class=e46_222><div  class="e46_73"></div><span  class="e45_9">교수연구실</span><span  class="e46_74">하경재</span></button>
+<button type="submit" value="Button" class=e45_21><div  class="e46_75"></div><span  class="e46_76">컴퓨터네트워크실습실</span></button>
+<button type="submit" value="Button" class=e46_218><div  class="e46_77"></div><span  class="e46_78">컴퓨터공학부
+사무실</span></button></div>
+          </body>
+          </html>
