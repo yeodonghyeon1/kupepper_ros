@@ -159,7 +159,7 @@ messages = [{"role": "system","content": "Don't make assumptions about what valu
             {"role": "system", "content": "페퍼는 가상이 아니며 실제로 이동할 수 있다. 누군가 이동을 원하면 그리로 이동할 수 있다."},
             ]
 
-location = {"임지언": (300, 400), "김진호": (31.4435647013,7.18209944068)}
+location = {"임지언": (300, 400,1,1), "김진호": (31.4435647013,7.18209944068, 1,1), "801": (-21.5854701996,-5.10018348694,0.102878790778,0.994693899855)}
 # messages = []
 # messages.append({"role": "system", "content": "Don't make assumptions about what values to plug into functions. Ask for clarification if a user request is ambiguous."})
 
@@ -167,7 +167,7 @@ def move(member):
     for i in location.keys():
         if i in member:
             print("move x: ", location.get(i)[0], "move y: ", location.get(i)[1])
-            return "-FMG-   _{}_{}".format(location.get(i)[0], location.get(i)[1])
+            return "-FMG-navi_{}_{}".format(location.get(i)[0], location.get(i)[1])
     return "-FMG-None"
 def dance():
     print("dance!!!!!!")
@@ -271,14 +271,17 @@ while True:
                 send_message += sad()   
 
 
-        if chat_use == True:                                    
-            chat_response = chat_completion_request(
-                messages=messages, tools=None, tool_choice=None
-            )
-            assistant_message = chat_response.choices[0].message
-            print("assistant_message:" , assistant_message.content)
-            send_message += "-TMG-" + str(assistant_message.content)
-            chat_use = False
+        if chat_use == True:
+            try:                                
+                chat_response = chat_completion_request(
+                    messages=messages, tools=None, tool_choice=None
+                )
+                assistant_message = chat_response.choices[0].message
+                print("assistant_message:" , assistant_message.content)
+                send_message += "-TMG-" + str(assistant_message.content)
+                chat_use = False
+            except:
+                pass
         chat_use = False
     print(send_message)
     socket.sendall(send_message.encode(encoding='utf-8'))

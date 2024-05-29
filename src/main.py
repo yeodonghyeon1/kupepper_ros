@@ -15,7 +15,6 @@ import time
 import threading
 from geometry_msgs.msg import Twist, PoseStamped
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal, MoveBaseFeedback, MoveBaseResult
-import keyboard
 import numpy as np
 import Tkinter
 import threading
@@ -43,8 +42,8 @@ if not os.path.exists(tmp_path):
 
 
 app = Flask(__name__)
-web_host = "192.168.122.56"
-web_page = "http://192.168.122.56:8080/"
+web_host = "172.23.28.1"
+web_page = "http://172.23.28.1:8080/"
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -55,6 +54,78 @@ def main_page():
 def start():
     if request.method == 'POST':
         app.start = True
+        return render_template('main.html')
+    return redirect(url_for('main_page'))
+
+@app.route('/button', methods=['GET', 'POST'])
+def button():
+    if request.method == 'POST':
+        value = request.form['button_value']
+        value = value.encode('utf-8')
+        if value == "강의실(802)":
+            app.xyzw = "7.41363859177_0.646141052246_-0.186690305871_0.982418815828"
+        elif value == "강의실(801)":
+            app.xyzw = "18.3805084229_26.7191734314_-0.673472857532_0.739211952127"
+        elif value == "강의실(801)":
+            app.xyzw = ""
+        elif value == "강의실(803)":
+            app.xyzw = "-21.5854701996_-5.10018348694_0.102878790778_0.994693899855"
+        elif value == "과학영재정보과학교실":
+            app.xyzw = "-21.5854701996_-5.10018348694_0.102878790778_0.994693899855"
+        elif value == "컴퓨터응용실습준비실":
+            app.xyzw = "-13.0078125_-3.54687309265_0.0864883732686_0.996252860116"
+        elif value == "컴퓨터응용실습실":
+            app.xyzw = "-11.0526866913_-3.02528548241_0.105992433122_0.994366936357"
+        elif value == "컴퓨터공학PBL실":
+            app.xyzw = "-0.159409821033_-1.15033531189_0.12191808491_0.992540165722"
+        elif value == "소프트웨어 및 정보보안 PBL실":
+            app.xyzw = "14.1229610443_1.01963496208_0.0369401701272_0.999317478998"
+        elif value == "미래 인터넷 실습실":
+            app.xyzw = "31.8135185242_1.36800861359_0.722566403011_0.691301521219"
+        elif value == "임베디드시스템실습실 캡스톤디자인실":
+            app.xyzw = "20.5724372864_1.04382514954_0.0339547197359_0.999423372254"
+        elif value == "자바OS실습실":
+            app.xyzw = "19.0750846863_18.0170345306_0.039317849285_0.999226754409"
+        elif value == "ABEEK자료 보관실":
+            app.xyzw = "29.4902420044_21.1318874359_0.0365514640859_0.999331771972"
+        elif value == "컴퓨터네트워크 실습준비실":
+            pass
+        elif value == "실시간시스템 통계분석자료실습실":
+            pass
+        elif value == "인터넷 데이터베이스 실습실":
+            pass
+        elif value == "융합 인공지능 실습실":
+            pass
+        elif value == "양근석 교수연구실":
+            pass
+        elif value == "김진호 교수연구실":
+            pass
+        elif value == "정민수 교수연구실":
+            pass
+        elif value == "임현일 교수연구실":
+            app.xyzw = "30.0773963928_24.5959434509_ -0.681707664048_0.731624672068"
+        elif value == "석승준 교수연구실":
+            app.xyzw = "30.0773963928_24.5959434509_ -0.681707664048_0.731624672068" 
+        elif value == "박미영 교수연구실":
+            app.xyzw = "28.2532978058_1.49982857704_0.0201580206609_0.999796806458" 
+        elif value == "황두영 교수연구실":
+            pass 
+        elif value == "서쌍희 교수연구실":
+            pass 
+        elif value == "이현동 교수연구실":
+            app.xyzw = "-6.07907867432_25.9202823639_0.0748686013507_0.997193407786"
+        elif value == "이기성 교수연구실":
+            app.xyzw = "-8.97193241119_25.7932567596_0.0773337202327_0.997005263635"  
+        elif value == "임지언 교수연구실":
+            pass
+        elif value == "전하영 교수연구실":
+            pass
+        elif value == "하경재 교수연구실":
+            pass
+        elif value == "컴퓨터네트워크실습실":
+            app.xyzw = "8.33035945892_27.9321670532_0.0803707754657_0.996765036732"
+        elif value == "컴퓨터공학부 사무실":
+            app.xyzw = "-16.4710083008_24.6061325073_0.0891534420677_0.996017903337"
         return render_template('main.html')
     return redirect(url_for('main_page'))
 
@@ -75,6 +146,7 @@ def test2():
 
 
 #플라스크 변수: 전역변수랑 같음(웹 이벤트 작동 시 사용)
+app.xyzw = None
 app.test2 = 0
 app.start = False
 ############################################################################################
@@ -246,9 +318,13 @@ class RosKuPepper:
     def web_interaction(self):
         #이동 상호작용
         # print("interaction number: ", app.test2)
-        if app.test2 == 1:
-            app.test2 = 0
-            self.navigation_mode_button_web()
+        print(app.xyzw)
+        if app.xyzw != None:
+            move = app.xyzw.split("_")
+            app.xyzw = None
+            print("move", move)
+            move = list(map(float, move))
+            self.navigation_mode_button_web(move[0], move[1], move[2], move[3])
         elif app.test2 == 2:
             app.test2 = 0
             self.talk_pepper_web()
@@ -355,8 +431,8 @@ class RosKuPepper:
             if listenOffCount == 3:
                     self.audio_recorder.stopMicrophonesRecording()
                     break 
-            if (time.time() - start_time) == 7:
-                break
+            # if (time.time() - start_time) > 5:
+            #     break
         # self.robot.audio_service.playFile("/home/nao/speech.wav") #mp3파일 재생 확인용
         self.download_file("speech.wav")
         r = sr.Recognizer()
@@ -394,8 +470,7 @@ class RosKuPepper:
                         pass
                     elif "navi" in data[i+1]:
                         move = data[i+1].split("_")
-                        print(move)
-                        self.pepper_dwa_move(float(move[1]), float(move[2]),0.47, 0.88)
+                        self.pepper_dwa_move(float(move[1]), float(move[2]),float(move[3]), float(move[4]))
 
                     elif data[i+1] == "clap":
                         pass
@@ -420,7 +495,7 @@ class RosKuPepper:
         self.speech_service.pause(True) 
         self.speech_service.removeAllContext() #context를 지워야하는지 몰루
         self.speech_service.deleteAllContexts()
-        self.speech_service.setVocabulary(["cooper",'pepper'],False) #true 하면 "<...> hi <...>" 이렇게 나옴
+        self.speech_service.setVocabulary(['pepper'],False) #true 하면 "<...> hi <...>" 이렇게 나옴
         self.speech_service.pause(False)
 
     #error
@@ -478,9 +553,11 @@ class RosKuPepper:
             pass
         self.event.clear()
 
-    def navigation_mode_button_web(self):
+    def navigation_mode_button_web(self, x, y , z , w ):
         self.event.set()
-        move_pepper = threading.Thread(target=self.move(0, 0))
+        move_pepper = threading.Thread(target=self.pepper_dwa_move(x, y,z,w))
+        move_pepper.start()
+
         self.event.clear()
         
     def navigation_mode_button_push(self,text,text2):
@@ -646,7 +723,6 @@ class RosKuPepper:
         goal.target_pose.pose.orientation.z = z
         goal.target_pose.pose.orientation.w = w
         client.send_goal(goal)
-        client.wait_for_result() # 만약 목적지를 여러 좌표를 경유한 뒤 가고 싶으면 추가로 넣으면 됨
 
         # goal.target_pose.header.frame_id = 'map' 
         # goal.target_pose.pose.position.x = 31.4435647013
