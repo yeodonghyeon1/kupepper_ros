@@ -58,6 +58,78 @@ def start():
         return render_template('main.html')
     return redirect(url_for('main_page'))
 
+@app.route('/button', methods=['GET', 'POST'])
+def button():
+    if request.method == 'POST':
+        value = request.form['button_value']
+        if  value == "강의실(802)":
+            pass
+        elif value == "강의실(801)":
+            pass
+        elif value == "강의실(801)":
+            pass
+        elif value == "강의실(803)":
+            pass
+        elif value == "과학영재정보과학교실":
+            pass
+        elif value == "컴퓨터응용실습준비실":
+            pass
+        elif value == "컴퓨터응용실습실":
+            pass
+        elif value == "컴퓨터공학PBL실":
+            pass
+        elif value == "소프트웨어 및 정보보안 PBL실":
+            pass
+        elif value == "미래 인터넷 실습실":
+            pass
+        elif value == "임베디드시스템실습실 캡스톤디자인실":
+            pass
+        elif value == "자바OS실습실":
+            pass
+        elif value == "ABEEK자료 보관실":
+            pass
+        elif value == "컴퓨터네트워크 실습준비실":
+            pass
+        elif value == "실시간시스템 통계분석자료실습실":
+            pass
+        elif value == "인터넷 데이터베이스 실습실":
+            pass
+        elif value == "융합 인공지능 실습실":
+            pass
+        elif value == "양근석 교수연구실":
+            pass
+        elif value == "김진호 교수연구실":
+            pass
+        elif value == "정민수 교수연구실":
+            pass
+        elif value == "임현일 교수연구실":
+            pass
+        elif value == "석승준 교수연구실":
+            pass 
+        elif value == "박미영 교수연구실":
+            pass 
+        elif value == "황두영 교수연구실":
+            pass 
+        elif value == "서쌍희 교수연구실":
+            pass 
+        elif value == "이현동 교수연구실":
+            pass
+        elif value == "이기성 교수연구실":
+            pass  
+        elif value == "임지언 교수연구실":
+            pass
+        elif value == "전하영 교수연구실":
+            pass
+        elif value == "하경재 교수연구실":
+            pass
+        elif value == "컴퓨터네트워크실습실":
+            pass
+        elif value == "컴퓨터공학부 사무실":
+            pass
+        app.start = True
+        return render_template('main.html')
+    return redirect(url_for('main_page'))
+
 @app.route('/test1', methods=['GET', 'POST'])
 def test1():
     if request.method == 'POST':
@@ -75,6 +147,7 @@ def test2():
 
 
 #플라스크 변수: 전역변수랑 같음(웹 이벤트 작동 시 사용)
+app.xywz = "None"
 app.test2 = 0
 app.start = False
 ############################################################################################
@@ -355,8 +428,8 @@ class RosKuPepper:
             if listenOffCount == 3:
                     self.audio_recorder.stopMicrophonesRecording()
                     break 
-            if (time.time() - start_time) == 7:
-                break
+            # if (time.time() - start_time) > 5:
+            #     break
         # self.robot.audio_service.playFile("/home/nao/speech.wav") #mp3파일 재생 확인용
         self.download_file("speech.wav")
         r = sr.Recognizer()
@@ -394,7 +467,6 @@ class RosKuPepper:
                         pass
                     elif "navi" in data[i+1]:
                         move = data[i+1].split("_")
-                        print(move)
                         self.pepper_dwa_move(float(move[1]), float(move[2]),0.47, 0.88)
 
                     elif data[i+1] == "clap":
@@ -420,7 +492,7 @@ class RosKuPepper:
         self.speech_service.pause(True) 
         self.speech_service.removeAllContext() #context를 지워야하는지 몰루
         self.speech_service.deleteAllContexts()
-        self.speech_service.setVocabulary(["cooper",'pepper'],False) #true 하면 "<...> hi <...>" 이렇게 나옴
+        self.speech_service.setVocabulary(['pepper'],False) #true 하면 "<...> hi <...>" 이렇게 나옴
         self.speech_service.pause(False)
 
     #error

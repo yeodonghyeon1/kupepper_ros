@@ -167,7 +167,7 @@ def move(member):
     for i in location.keys():
         if i in member:
             print("move x: ", location.get(i)[0], "move y: ", location.get(i)[1])
-            return "-FMG-   _{}_{}".format(location.get(i)[0], location.get(i)[1])
+            return "-FMG-navi_{}_{}".format(location.get(i)[0], location.get(i)[1])
     return "-FMG-None"
 def dance():
     print("dance!!!!!!")
@@ -271,14 +271,17 @@ while True:
                 send_message += sad()   
 
 
-        if chat_use == True:                                    
-            chat_response = chat_completion_request(
-                messages=messages, tools=None, tool_choice=None
-            )
-            assistant_message = chat_response.choices[0].message
-            print("assistant_message:" , assistant_message.content)
-            send_message += "-TMG-" + str(assistant_message.content)
-            chat_use = False
+        if chat_use == True:
+            try:                                
+                chat_response = chat_completion_request(
+                    messages=messages, tools=None, tool_choice=None
+                )
+                assistant_message = chat_response.choices[0].message
+                print("assistant_message:" , assistant_message.content)
+                send_message += "-TMG-" + str(assistant_message.content)
+                chat_use = False
+            except:
+                pass
         chat_use = False
     print(send_message)
     socket.sendall(send_message.encode(encoding='utf-8'))
