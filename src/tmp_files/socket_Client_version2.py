@@ -167,41 +167,41 @@ def move(member):
     for i in location.keys():
         if i in member:
             print("move x: ", location.get(i)[0], "move y: ", location.get(i)[1])
-            return "-FMG-navi_{}_{}".format(location.get(i)[0], location.get(i)[1])
-    return "-FMG-None"
+            return "~~FMG~~navi_{}_{}".format(location.get(i)[0], location.get(i)[1])
+    return "~~FMG~~None"
 def dance():
     print("dance!!!!!!")
-    return "-FMG-dance"
+    return "~~FMG~~dance"
 
 def clap():
     print("clap!!!!!!")
-    return "-FMG-clap"
+    return "~~FMG~~clap"
     
 
 def rock_paper_scissors():
     print("rock_paper_scissors")
-    return "-FMG-rock_paper_scissors"
+    return "~~FMG~~rock_paper_scissors"
     
 
 def stop_behavior():
     print("stopstop!!")
-    return "-FMG-stop_behavior"
+    return "~~FMG-stop_behavior"
 
 
 def happy():
-    return "-FMG-happy"
+    return "~~FMG~~happy"
     
 
 def sad():
-    return "-FMG-sad"
+    return "~~FMG~~sad"
     
 
 def angry():
-    return "-FMG-angry"
+    return "~~FMG~~angry"
     
 
 def nothing():
-    return "-FMG-nothing"
+    return "~~FMG-nothing"
     
 
 member = ""
@@ -278,7 +278,7 @@ while True:
                 )
                 assistant_message = chat_response.choices[0].message
                 print("assistant_message:" , assistant_message.content)
-                send_message += "-TMG-" + str(assistant_message.content)
+                send_message += "~~TMG~~" + str(assistant_message.content)
                 chat_use = False
             except:
                 pass
