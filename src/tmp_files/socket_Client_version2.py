@@ -185,7 +185,7 @@ def rock_paper_scissors():
 
 def stop_behavior():
     print("stopstop!!")
-    return "~~FMG-stop_behavior"
+    return "~~FMG~~stop_behavior"
 
 
 def happy():
@@ -201,7 +201,7 @@ def angry():
     
 
 def nothing():
-    return "~~FMG-nothing"
+    return "~~FMG~~nothing"
     
 
 member = ""
