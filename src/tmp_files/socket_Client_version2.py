@@ -112,6 +112,27 @@ tools = [
             },
         }
     },
+
+    {
+        "type": "function",
+        "function": {
+            "name": "pepper_action",
+            "description": "페퍼에게 재미를 요구 하면",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "재미": {
+                        "type": "string",
+                            "enum": ["기타치기", "좀비흉내내기", ""],
+                            "description": "질문자의 의도 파악 후 셋 중 하나 선택.",
+                    },
+                },
+
+            "required": ["재미"]
+            
+            },
+        }
+    },
 ]
 
 
@@ -231,6 +252,12 @@ def sad():
 
 def angry():
     return "~~FMG~~angry"
+
+def zombi():
+    return "~~FMG~~zombi"
+
+def guitar():
+    return "~~FMG~~guitar"
     
 
 def nothing():
@@ -303,6 +330,11 @@ while True:
             elif "슬퍼하기" in tool_calls[0].function.arguments:
                 send_message += sad()   
 
+        elif tool_function_name == "pepper_action":
+            if "기타치기" in tool_calls[0].function.arguments:
+                send_message += guitar()
+            elif "좀비흉내내기" in tool_calls[0].function.arguments:
+                send_message += zombi()     
 
         if chat_use == True:
             try:                                

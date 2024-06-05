@@ -488,6 +488,10 @@ class RosKuPepper:
                         self.start_animation(np.random.choice(["Angry_1", "Angry_2", "Angry_3"]), "angry")
                     elif data[i+1] == "sad":
                         self.start_animation(np.random.choice(["Sad_1"]), "sad")
+                    elif data[i+1] == "zombi":
+                        self.start_animation(np.random.choice(["Zombie_1"]), "zombi")
+                    elif data[i+1] == "guitar":
+                        self.start_animation(np.random.choice(["AirGuitar_1"]), "guitar")        
                     elif data[i+1] == "nothing":
                         pass
             elif data[i] == "TMG":
@@ -1062,6 +1066,12 @@ class RosKuPepper:
                 animation_finished.value()
             elif behavior == "sad":
                 animation_finished = self.animation_service.run("animations/[posture]/Emotions/Negative/" + animation, _async=True)
+                animation_finished.value()
+            elif behavior == "zombi":
+                animation_finished = self.animation_service.run("animations/[posture]/Wating/" + animation, _async=True)
+                animation_finished.value()
+            elif behavior == "guitar":
+                animation_finished = self.animation_service.run("animations/[posture]/Wating/" + animation, _async=True)
                 animation_finished.value()
             return True
         except Exception as error:
