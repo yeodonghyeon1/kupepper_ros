@@ -276,7 +276,7 @@ while True:
     assistant_message = chat_response.choices[0].message
 
     print("assistant_message:" , assistant_message.content)
-    send_message += "-BMG-" + str(assistant_message.content)
+    send_message += "~~BMG~~" + str(assistant_message.content)
 
     tool_calls = assistant_message.tool_calls
     print(tool_calls)
