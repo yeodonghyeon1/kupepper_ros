@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+
 import rospy
 import qi
 import paramiko
@@ -28,6 +29,7 @@ import numpy
 import subprocess
 import actionlib
 import datetime
+from naoqi import ALProxy
 #2024-02-24T060328.807Z.explo
 tmp_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tmp_files")
 print("tmp_path:", tmp_path)
@@ -170,7 +172,6 @@ class RosKuPepper:
         ssh.connect(hostname=ip_address, username="nao", password="Han343344^^")
         self.scp = SCPClient(ssh.get_transport())
 
-
         self.motion_service = self.session.service("ALMotion")
         self.navigation_service = self.session.service("ALNavigation")
         self.memory_service = self.session.service("ALMemory")
@@ -234,25 +235,25 @@ class RosKuPepper:
         self.msg.ranges = -1*np.ones(360)
         # self.autolife_service.setState('disabled') #off
         self.posture_service.goToPosture("Stand", 3.0)
-        thread3 = threading.Thread(target=self.head)
-        thread3.start()
+        # thread3 = threading.Thread(target=self.head)
+        # thread3.start()
         self.x = 0
         self.y = 0
         self.w = 0
 
         self.event = threading.Event()
-        # socket_thread = threading.Thread(target=self.socket_Server_connect)
-        # socket_thread.start()
+        socket_thread = threading.Thread(target=self.socket_Server_connect)
+        socket_thread.start()
         self.base_thread = threading.Thread(target=self.baseline)
-        self.base_thread.daemon = True
+        self.base_thread.daemon = True #콘트롤c눌렀을떄 끄는거
         self.base_thread.start()
+        # self.action_thread = threading.Thread(target=self.motion ,args=("faceage"))
+        # self.action_thread.daemon = True #콘트롤c눌렀을떄 끄는거
+        # self.action_thread.start()
         self.say("hi my name is pepper.")
 
-        # self.pepper_dwa_move(2.35, -0.319, 0.47, 0.88) #pepper move x, y, w, h
-
-
-
         subprocess.call(['python3', '{}/socket_Client_version2.py'.format(tmp_path), "{}".format(web_host)])
+
 
         #GUI
         # self.window = Tkinter.Tk()
@@ -264,6 +265,30 @@ class RosKuPepper:
         self.resolution=0 
         self.offset_x =0 
         self.offset_y =0
+
+
+    def motion (self, data):   
+            if(data == "faceage"):
+                if self.behavior_service.isBehaviorInstalled("faceage-0e54e8/behavior_1"):
+                    print("cccccccccccccccccccccc")
+
+                    try:
+                        self.behavior_service.stopBehavior("faceage-0e54e8/behavior_1")
+                    except:
+                        pass
+
+                    self.behavior_service.startBehavior("faceage-0e54e8/behavior_1")
+
+                    while self.behavior_service.isBehaviorRunning("faceage-0e54e8/behavior_1"):
+                        print("동작 중...")
+                        time.sleep(1)
+                    self.behavior_service.stopBehavior("faceage-0e54e8/behavior_1")
+            
+                else:
+                    print("ddddddddddddddddddddddddddddd")
+                # self.behavior_service.startBehavior("faceage-0e54e8/behavior_1")
+            # self.pepper_dwa_move(2.35, -0.319, 0.47, 0.88) #pepper move x, y, w, h
+
 
 
     def stopThreadUntilOneTheEnd(self):
@@ -291,26 +316,24 @@ class RosKuPepper:
     def base_parameter(self):
         
         self.set_security_distance(distance=0.2)
-        self.set_vocabulary()
+        # self.set_vocabulary()
 
-        try:
-            self.dialog_service.unsubscribe("my_dialog") #start dialog engine
-        except:
-            pass
+        # try:
+        #     self.dialog_service.unsubscribe("my_dialog") #start dialog engine
+        # except:
+        #     pass
 
-        self.text_to_speech.setLanguage("Korean") #타블렛 화면도 한글로 
-        topicContent2 = ("topic: ~mytopic2()\n"
-                            "language: enu\n"
-                            "proposal: This is KUPepper, How to help you??\n")
-        self.autonomous_life_service.setState("interactive")
-        self.autonomous_life_service.switchFocus("web_site-9108dc/behavior_1") #package-uuid/behavior-path
-        loaded_topic=self.dialog_service.loadTopicContent(topicContent2) #load topic content
-        self.dialog_service.activateTopic(loaded_topic) #activate topic
+        # self.text_to_speech.setLanguage("Korean") #타블렛 화면도 한글로 
+        # topicContent2 = ("topic: ~mytopic2()\n"
+        #                     "language: enu\n"
+        #                     "proposal: This is KUPepper, How to help you??\n")
+        # self.autonomous_life_service.setState("interactive")
+        # self.autonomous_life_service.switchFocus("web_site-9108dc/behavior_1") #package-uuid/behavior-path
+        # loaded_topic=self.dialog_service.loadTopicContent(topicContent2) #load topic content
+        # self.dialog_service.activateTopic(loaded_topic) #activate topic
         
-        self.dialog_service.subscribe("my_dialog") #start dialog engine
-        # self.load_map_and_localization()
+        # self.dialog_service.subscribe("my_dialog") #start dialog engine
 
-        # print(self.robot.navigation_service.getMetricalMap())
 
     #페퍼 상호작용
     def interaction(self):
@@ -355,6 +378,7 @@ class RosKuPepper:
                     #     self.talk_pepper()
                     if word[1]>=0.40:
                         self.say("네에, 말씀하세요.")
+                        # self.start_animation(("BodyTalk_3"), "talk")#질문을 원할때 모션
                         talk_thread = threading.Thread(target=self.talk_pepper)
                         talk_thread.daemon = True
                         talk_thread.start()
@@ -457,6 +481,7 @@ class RosKuPepper:
             # self.talk_pepper()#또다시 인식
         except:
             self.say("죄송합니다. 다시 말해주시겠습니까?") #인식못했을때
+            # self.start_animation(("Sorry_1"), "sorry") #미안하다는 모션
             # self.talk_pepper()# 다시 인식
         finally:
             self.event.clear()
@@ -492,6 +517,8 @@ class RosKuPepper:
                         self.start_animation(np.random.choice(["Zombie_1"]), "zombi")
                     elif data[i+1] == "guitar":
                         self.start_animation(np.random.choice(["AirGuitar_1"]), "guitar")        
+                    elif data[i+1] == "faceage":
+                        self.start_animation(np.random.choice(["faceage"]), "faceage")        
                     elif data[i+1] == "nothing":
                         pass
             elif data[i] == "TMG":
@@ -1054,7 +1081,7 @@ class RosKuPepper:
             else:
                 self.speech_service.setAudioExpression(False)
                 self.speech_service.setVisualExpression(False)
-
+            print("asaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
             if behavior == "hey":
                 animation_finished = self.animation_service.run("animations/[posture]/Emotions/Positive/" + animation, _async=True)
                 animation_finished.value()
@@ -1068,16 +1095,24 @@ class RosKuPepper:
                 animation_finished = self.animation_service.run("animations/[posture]/Emotions/Negative/" + animation, _async=True)
                 animation_finished.value()
             elif behavior == "zombi":
-                animation_finished = self.animation_service.run("animations/[posture]/Wating/" + animation, _async=True)
+                animation_finished = self.animation_service.run("animations/[posture]/Waiting/" + animation, _async=True)
                 animation_finished.value()
             elif behavior == "guitar":
-                animation_finished = self.animation_service.run("animations/[posture]/Wating/" + animation, _async=True)
+                animation_finished = self.animation_service.run("animations/[posture]/Waiting/" + animation, _async=True)
                 animation_finished.value()
-            return True
+            elif behavior == "talk":
+                animation_finished = self.animation_service.run("animations/[posture]/BodyTalk/Speaking/" + animation, _async=True)
+                animation_finished.value()
+            elif behavior == "sorry":
+                animation_finished = self.animation_service.run("animations/[posture]/Emotions/Negative/" + animation, _async=True)
+                animation_finished.value()
+            elif behavior == "faceage":
+                self.behavior_service.isBehaviorInstalled("faceage")
+
         except Exception as error:
             print(error)
             return False
-    
+        
     def start_behavior(self, behavior):
         """
         Starts a behavior stored on robot

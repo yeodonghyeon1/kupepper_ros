@@ -4,7 +4,7 @@
 import socket, time
 import speech_recognition as sr
 
-host = '192.168.122.56' 
+host = '172.23.28.1' 
 port = 3333 
 
 # 서버소켓 오픈/ netstat -a로 포트 확인
