@@ -17,7 +17,7 @@ body {
 }.frame-1-KEo {
   box-sizing: border-box;
   padding: 22.1rem 1.8rem 1.1rem 1.8rem;
-  width: 100%;
+  width: 74%;
   overflow: hidden;
   position: relative;
   align-items: center;
@@ -67,10 +67,10 @@ body {
   flex-shrink: 0;
 }
 .frame-1-KEo .auto-group-hsr5-9BD {
-  margin-right: 102.6rem;
-  width: calc(100% - 102.6rem);
+  margin-right: 70.6rem;
+  width: calc(50% - 102.6rem);
   display: flex;
-  align-items: center;
+  align-items: top;
   flex-shrink: 0;
 }
 .frame-1-KEo .auto-group-hsr5-9BD .logo01jpg-1-gS3 {

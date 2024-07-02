@@ -131,6 +131,26 @@ tools = [
             },
         }
     },
+
+        {
+        "type": "function",
+        "function": {
+            "name": "faceage",
+            "description": "페퍼에게 사용자의 나이를 물어보면",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "나이": {
+                        "type": "string",
+                            "description": "",
+                    },
+                },
+
+            "required": ["나이"]
+
+            },
+        }
+    },
 ]
 
 
@@ -257,6 +277,9 @@ def zombi():
 def guitar():
     return "~~FMG~~guitar"
 
+def faceage():
+    return "~~FMG~~faceage"
+
 
 def nothing():
     return "~~FMG~~nothing"
@@ -333,6 +356,10 @@ while True:
                 send_message += guitar()
             elif "좀비흉내내기" in tool_calls[0].function.arguments:
                 send_message += zombi()     
+
+        elif tool_function_name == "faceage":
+                send_message += faceage()
+
 
         if chat_use == True:
             try:                                

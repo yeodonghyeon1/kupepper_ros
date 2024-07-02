@@ -45,7 +45,7 @@ if not os.path.exists(tmp_path):
 
 app = Flask(__name__)
 web_host = "172.23.28.1"
-web_page = "http://172.23.28.1:8080/"
+web_page = "http://172.25.87.31:8080/"
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -57,7 +57,7 @@ def start():
     if request.method == 'POST':
         app.start = True
         return render_template('main.html')
-    return redirect(url_for('main_page'))
+    return render_template('main.html')
 
 @app.route('/button', methods=['GET', 'POST'])
 def button():
@@ -247,9 +247,7 @@ class RosKuPepper:
         self.base_thread = threading.Thread(target=self.baseline)
         self.base_thread.daemon = True #콘트롤c눌렀을떄 끄는거
         self.base_thread.start()
-        # self.action_thread = threading.Thread(target=self.motion ,args=("faceage"))
-        # self.action_thread.daemon = True #콘트롤c눌렀을떄 끄는거
-        # self.action_thread.start()
+        
         self.say("hi my name is pepper.")
 
         subprocess.call(['python3', '{}/socket_Client_version2.py'.format(tmp_path), "{}".format(web_host)])
@@ -314,25 +312,25 @@ class RosKuPepper:
 
     #기본 파라미터 구성
     def base_parameter(self):
-        
+        self.web_page_reset()
         self.set_security_distance(distance=0.2)
-        # self.set_vocabulary()
+        self.set_vocabulary()
 
-        # try:
-        #     self.dialog_service.unsubscribe("my_dialog") #start dialog engine
-        # except:
-        #     pass
+        try:
+            self.dialog_service.unsubscribe("my_dialog") #start dialog engine
+        except:
+            pass
 
-        # self.text_to_speech.setLanguage("Korean") #타블렛 화면도 한글로 
-        # topicContent2 = ("topic: ~mytopic2()\n"
-        #                     "language: enu\n"
-        #                     "proposal: This is KUPepper, How to help you??\n")
-        # self.autonomous_life_service.setState("interactive")
-        # self.autonomous_life_service.switchFocus("web_site-9108dc/behavior_1") #package-uuid/behavior-path
-        # loaded_topic=self.dialog_service.loadTopicContent(topicContent2) #load topic content
-        # self.dialog_service.activateTopic(loaded_topic) #activate topic
+        self.text_to_speech.setLanguage("Korean") #타블렛 화면도 한글로 
+        topicContent2 = ("topic: ~mytopic2()\n"
+                            "language: enu\n"
+                            "proposal: This is KUPepper, How to help you??\n")
+        self.autonomous_life_service.setState("interactive")
+        self.autonomous_life_service.switchFocus("web_site-9108dc/behavior_1") #package-uuid/behavior-path
+        loaded_topic=self.dialog_service.loadTopicContent(topicContent2) #load topic content
+        self.dialog_service.activateTopic(loaded_topic) #activate topic
         
-        # self.dialog_service.subscribe("my_dialog") #start dialog engine
+        self.dialog_service.subscribe("my_dialog") #start dialog engine
 
 
     #페퍼 상호작용
@@ -518,7 +516,9 @@ class RosKuPepper:
                     elif data[i+1] == "guitar":
                         self.start_animation(np.random.choice(["AirGuitar_1"]), "guitar")        
                     elif data[i+1] == "faceage":
-                        self.start_animation(np.random.choice(["faceage"]), "faceage")        
+                        self.action_thread = threading.Thread(target=self.motion ,args=('faceage',))
+                        self.action_thread.daemon = True #콘트롤c눌렀을떄 끄는거
+                        self.action_thread.start()       
                     elif data[i+1] == "nothing":
                         pass
             elif data[i] == "TMG":
@@ -640,9 +640,9 @@ class RosKuPepper:
 
     def web_page_reset(self):
         self.event.set()
-        self.web_thread = threading.Thread(target=self.show_web(web_page))
+        self.web_thread = threading.Thread(target=self.show_web, args= (web_page, ))
         self.web_thread.start()     
-        self.say("web page reset")
+        # self.say("web page reset")
         self.event.clear()
 
     def move(self,x,y):
@@ -943,8 +943,38 @@ class RosKuPepper:
             print(error)
             return False
     def show_web(self, website):
-        print("Showing a website on the tablet")
+        # if self.behavior_service.isBehaviorInstalled("web_by-e24ad0/behavior_1"):
+        #     print("cccccccccccccccccccccc")
+        #     try:
+        #         self.behavior_service.stopBehavior("web_by-e24ad0/behavior_1")
+        #     except:
+        #         pass
+        #     # self.behavior_service.addDefaultBehavior("web_by-e24ad0/behavior_1")
+
+        #     self.behavior_service.startBehavior("web_by-e24ad0/behavior_1")
+
+        #     while self.behavior_service.isBehaviorRunning("web_by-e24ad0/behavior_1"):
+        #         print("웹 페이지..")
+        #         time.sleep(10)
+        #         self.behavior_service.stopBehavior("web_by-e24ad0/behavior_1")
+        #         self.behavior_service.startBehavior("web_by-e24ad0/behavior_1")
+
+        # else:
+        #     print("ddddddddddddddddddddddddddddd")
+        # print("Showing a website on the tablet")
         self.tablet_service.showWebview(website)
+        time.sleep(3)
+        while True:
+            if app.start == False:
+                self.tablet_service.showWebview(website)
+                time.sleep(5)
+            else:
+                break
+        while True:
+            if app.start == True:
+                self.tablet_service.showWebview(website + "start")
+                time.sleep(5)
+
     def detect_touch(self):
         react_to_touch = ReactToTouch(self.app)
         print("Waiting for touch...")
