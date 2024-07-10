@@ -316,7 +316,7 @@ class RosKuPepper:
     #기본 파라미터 구성
     def base_parameter(self):
         self.web_page_reset()
-        self.set_security_distance(distance=0.2)
+        self.set_security_distance(distance=0.5)
         self.set_vocabulary()
 
         try:
@@ -559,7 +559,7 @@ class RosKuPepper:
         self.speech_service.pause(True) 
         self.speech_service.removeAllContext() #context를 지워야하는지 몰루
         self.speech_service.deleteAllContexts()
-        self.speech_service.setVocabulary(['pepper', 'ma', 'aye','ya'],False) #true 하면 "<...> hi <...>" 이렇게 나옴
+        self.speech_service.setVocabulary(['pepper','papper','peper', 'ma', 'aye','ya'],False) #true 하면 "<...> hi <...>" 이렇게 나옴
         self.speech_service.pause(False)
 
     #error
