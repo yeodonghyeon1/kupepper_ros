@@ -12,6 +12,7 @@ from sensor_msgs.msg import LaserScan
 from tf2_msgs.msg._TFMessage import TFMessage
 from sensor_msgs.msg._MultiEchoLaserScan import MultiEchoLaserScan
 from sensor_msgs.msg._Imu import Imu
+from geometry_msgs.msg import PoseWithCovarianceStamped
 import time
 import threading
 from geometry_msgs.msg import Twist, PoseStamped
@@ -29,7 +30,8 @@ import numpy
 import subprocess
 import actionlib
 import datetime
-from naoqi import ALProxy
+import random
+#from naoqi import ALProxy
 #2024-02-24T060328.807Z.explo
 tmp_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tmp_files")
 print("tmp_path:", tmp_path)
@@ -44,8 +46,8 @@ if not os.path.exists(tmp_path):
 
 
 app = Flask(__name__)
-web_host = "172.23.28.1"
-web_page = "http://172.25.87.31:8080/"
+web_host = "192.168.122.56"
+web_page = "http://192.168.201.43:8080/"
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -223,7 +225,7 @@ class RosKuPepper:
             self.audio_recorder.stopMicrophonesRecording()
         except:
             pass
-
+        self.pepper_say = False
         self.motion_service.setOrthogonalSecurityDistance(2)
         self.voice_speed = 100
         self.voice_shape = 100
@@ -242,6 +244,7 @@ class RosKuPepper:
         self.w = 0
 
         self.event = threading.Event()
+        
         socket_thread = threading.Thread(target=self.socket_Server_connect)
         socket_thread.start()
         self.base_thread = threading.Thread(target=self.baseline)
@@ -250,8 +253,9 @@ class RosKuPepper:
         
         self.say("hi my name is pepper.")
 
-        subprocess.call(['python3', '{}/socket_Client_version2.py'.format(tmp_path), "{}".format(web_host)])
-
+        socket_server_thread = threading.Thread(target=self.socket_server)
+        socket_server_thread.daemon = True
+        socket_server_thread.start()
 
         #GUI
         # self.window = Tkinter.Tk()
@@ -268,7 +272,6 @@ class RosKuPepper:
     def motion (self, data):   
             if(data == "faceage"):
                 if self.behavior_service.isBehaviorInstalled("faceage-0e54e8/behavior_1"):
-                    print("cccccccccccccccccccccc")
 
                     try:
                         self.behavior_service.stopBehavior("faceage-0e54e8/behavior_1")
@@ -283,7 +286,7 @@ class RosKuPepper:
                     self.behavior_service.stopBehavior("faceage-0e54e8/behavior_1")
             
                 else:
-                    print("ddddddddddddddddddddddddddddd")
+                    pass
                 # self.behavior_service.startBehavior("faceage-0e54e8/behavior_1")
             # self.pepper_dwa_move(2.35, -0.319, 0.47, 0.88) #pepper move x, y, w, h
 
@@ -374,12 +377,14 @@ class RosKuPepper:
                     # print(word) #확인용
                     # if self.robot.memory_service.getData("ALSpeechRecognition/Status") == "SpeechDetected":
                     #     self.talk_pepper()
-                    if word[1]>=0.40:
+                    if word[1]>=0.45:
                         self.say("네에, 말씀하세요.")
                         # self.start_animation(("BodyTalk_3"), "talk")#질문을 원할때 모션
                         talk_thread = threading.Thread(target=self.talk_pepper)
                         talk_thread.daemon = True
                         talk_thread.start()
+                        self.start_animation(("BodyTalk_3"), "talk")#질문을 원할때 모션
+
                     time.sleep(0.1)
                     while_count += 1
                 else:
@@ -448,6 +453,7 @@ class RosKuPepper:
         #여기서 endofprocess가 나올때까지 기다리는데 일정시간 지나면 끝내는 코드를 넣어야함
         listenOffCount = 0
         while True:
+            self.tablet_service.showAlertView(1.0,"#50bcdf", 1)
             print(self.memory_service.getData("ALSpeechRecognition/Status"))
             if self.memory_service.getData("ALSpeechRecognition/Status") == "EndOfProcess":
                 self.audio_recorder.stopMicrophonesRecording()
@@ -471,19 +477,26 @@ class RosKuPepper:
             msg2 = r.recognize_google(audio, language='ko-KR') #음성을 변환
             print("send message!!!!~~~")
             print(msg2)
-            self.client_soc.sendall(msg2.encode(encoding='utf-8'))
-            data = self.client_soc.recv(1000)#메시지 받는 부분
-            self.pepper_behavior(data)
-            # self.say(data)
-            print(data)
-            # self.talk_pepper()#또다시 인식
+            self.pepper_say = True
+            try:
+                self.client_soc.sendall(msg2.encode(encoding='utf-8'))
+                data = self.client_soc.recv(1000)#메시지 받는 부분
+                self.pepper_behavior(data)
+                print(data)
+            except:
+                self.say("서버가 연결되지 않았습니다.") #인식못했을때
+            
         except:
-            self.say("죄송합니다. 다시 말해주시겠습니까?") #인식못했을때
-            # self.start_animation(("Sorry_1"), "sorry") #미안하다는 모션
-            # self.talk_pepper()# 다시 인식
-        finally:
-            self.event.clear()
-            time.sleep(0.1)
+            self.say("인식되지 않았습니다. 좀 더 크게 말해주시겠어요?")
+
+        self.pepper_say = False
+
+        # self.say(data)
+        # self.talk_pepper()#또다시 인식
+        # self.start_animation(("Sorry_1"), "sorry") #미안하다는 모션
+        # self.talk_pepper()# 다시 인식
+        self.event.clear()
+        time.sleep(0.1)
 
     def pepper_behavior(self,data):
         data = data.split("~~")
@@ -496,9 +509,24 @@ class RosKuPepper:
                     if data[i+1] == "dance":
                         pass
                     elif "navi" in data[i+1]:
-                        move = data[i+1].split("_")
-                        self.pepper_dwa_move(float(move[1]), float(move[2]),float(move[3]), float(move[4]))
-
+                        if data[i+1] == "stop_navigation":
+                            self.move_base.cancel_all_goals()
+                        else:
+                            move = data[i+1].split("_")
+                            self.pepper_dwa_move(float(move[1]), float(move[2]),float(move[3]), float(move[4]))
+                    elif "move" in data[i+1]:
+                        if data[i+1] == "right_move":
+                            self.motion_service.move(0,0.5,0)
+                        elif data[i+1] == "left_move":
+                            self.motion_service.move(0,-0.5,0)
+                        elif data[i+1] == "front_move":
+                            self.motion_service.move(0.5,0,0)
+                        elif data[i+1] == "back_move":
+                            self.motion_service.move(-0.5,0,0)
+                        elif data[i+1] == "random_move":
+                            print(round(float(random.random()), 1),round(float(random.random()), 1),round(float(random.random()),1))
+                            self.motion_service.move(round(float(random.random()+0.5), 1),round(float(random.random()+0.5), 1), 0)
+                        
                     elif data[i+1] == "clap":
                         pass
                     elif data[i+1] == "rock_paper_scissors":
@@ -521,6 +549,7 @@ class RosKuPepper:
                         self.action_thread.start()       
                     elif data[i+1] == "nothing":
                         pass
+
             elif data[i] == "TMG":
                 if data[i+1] != "None":
                     self.say(data[i+1])
@@ -530,7 +559,7 @@ class RosKuPepper:
         self.speech_service.pause(True) 
         self.speech_service.removeAllContext() #context를 지워야하는지 몰루
         self.speech_service.deleteAllContexts()
-        self.speech_service.setVocabulary(['pepper'],False) #true 하면 "<...> hi <...>" 이렇게 나옴
+        self.speech_service.setVocabulary(['pepper', 'ma', 'aye','ya'],False) #true 하면 "<...> hi <...>" 이렇게 나옴
         self.speech_service.pause(False)
 
     #error
@@ -747,9 +776,9 @@ class RosKuPepper:
             time.sleep(1)
 
     def pepper_dwa_move(self, x, y, z, w):
-        client = actionlib.SimpleActionClient('/move_base', MoveBaseAction)
+        self.move_base = actionlib.SimpleActionClient('/move_base', MoveBaseAction)
         rospy.loginfo("Waiting for move base server")
-        client.wait_for_server()
+        self.move_base.wait_for_server()
 
         goal = MoveBaseGoal()
         goal.target_pose.header.frame_id = 'map' 
@@ -757,8 +786,8 @@ class RosKuPepper:
         goal.target_pose.pose.position.y = y
         goal.target_pose.pose.orientation.z = z
         goal.target_pose.pose.orientation.w = w
-        client.send_goal(goal)
-
+        self.move_base.send_goal(goal)
+        # self.say("경로가 끝났습니다")   
         # goal.target_pose.header.frame_id = 'map' 
         # goal.target_pose.pose.position.x = 31.4435647013
 
@@ -783,19 +812,19 @@ class RosKuPepper:
         # client.send_goal(goal)
         # client.wait_for_result() # 만약 목적지를 여러 좌표를 경유한 뒤 가고 싶으면 추가로 넣으면 됨
     def talker(self):
-        
         rate = rospy.Rate(10) # 10hz
         self.pub_laser = rospy.Publisher('/base_scan', LaserScan, queue_size=100)
         self.pub_odom = rospy.Publisher('/odom', Odometry, queue_size=100)
-
         # self.pub_imu = rospy.Publisher('/imu', Imu, queue_size=100)
         self.cmd_vel_sub = rospy.Subscriber('/turtle1/cmd_vel', Twist, self.cmd_vel_callback) 
         # rospy.Subscriber('/naoqi_driver/imu/base', Imu, self.callback)
         rospy.Subscriber('/naoqi_driver/laser', LaserScan, self.callback2)
         rospy.Subscriber('/scan', LaserScan, self.callback3)
+        rospy.Subscriber('/amcl_pose', PoseWithCovarianceStamped, self.callback5)
+
         # rospy.Subscriber('/naoqi_driver/odom', Odometry, self.callback4)
 
-        
+        print("sdfsdf")        
         while not rospy.is_shutdown():
             # hello_str = "hello world %s" % rospy.get_time()
             # rospy.loginfo(hello_str) 
@@ -818,6 +847,11 @@ class RosKuPepper:
 
     def callback4(self, data):
         self.pub_odom.publish(data)
+        # self.pub_laser2.publish(self.data_laser)
+
+    def callback5(self, data):
+        # print("amcl", data)
+        self.pose_data = data
         # self.pub_laser2.publish(self.data_laser)
 
     def cmd_vel_callback(self, data):
@@ -963,6 +997,7 @@ class RosKuPepper:
         #     print("ddddddddddddddddddddddddddddd")
         # print("Showing a website on the tablet")
         self.tablet_service.showWebview(website)
+        # self.tablet_service.turnScreenOn(True)
         time.sleep(3)
         while True:
             if app.start == False:
@@ -972,8 +1007,21 @@ class RosKuPepper:
                 break
         while True:
             if app.start == True:
-                self.tablet_service.showWebview(website + "start")
-                time.sleep(5)
+                if self.pepper_say == False:
+                    try:
+                        self.tablet_service.showWebview(website + "start")
+                        time.sleep(5)
+                    except:
+                        time.sleep(5)
+                else:
+                    while True:
+                        if self.pepper_say == True:
+                            time.sleep(1)
+                        else:
+                            break
+
+               
+
 
     def detect_touch(self):
         react_to_touch = ReactToTouch(self.app)
@@ -2207,11 +2255,14 @@ class RosKuPepper:
         self.hand("right", True)
         self.move_joint_by_angle(["RElbowRoll", "RShoulderPitch", "RElbowYaw", "RWristYaw"], [0, 1.5, 1, 1], 1.0)
 
-
+    def socket_server(self):
+        subprocess.call(['python3', '{}/socket_Client_version2.py'.format(tmp_path), "{}".format(web_host)])
 
 def main():
+    print(rospy.get_param('~pepper_ip'), rospy.get_param('~pepper_port'))
     pepper = RosKuPepper(rospy.get_param('~pepper_ip'), rospy.get_param('~pepper_port'))
     # pepper = RosKuPepper("192.168.0.125", "9559")
+
     pepper.talker()
 
 

@@ -3,10 +3,10 @@ local_costmap:
    # robot_base_frame: map
 
    robot_base_frame: base_footprint
-   # update_frequency: 0.5
-   # publish_frequency: 1.0
-   update_frequency: 5.0
+   update_frequency: 5
    publish_frequency: 2.0
+   # update_frequency: 1.0
+   # publish_frequency: 0.5
    static_map: false#false
    rolling_window: true
    width: 4.0 #local costmap 사각형 크기

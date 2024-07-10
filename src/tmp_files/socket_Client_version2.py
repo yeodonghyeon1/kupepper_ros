@@ -5,6 +5,7 @@ from openai import OpenAI
 from tenacity import retry, wait_random_exponential, stop_after_attempt
 from termcolor import colored  
 import sys
+
 GPT_MODEL = "gpt-3.5-turbo"
 client = OpenAI(api_key='')
 
@@ -29,19 +30,19 @@ def chat_completion_request(messages, tools=None, tool_choice=None, model=GPT_MO
         print("Unable to generate ChatCompletion response")
         print("Exception: {}".format(e))
         return e
-
+#어떤 장소나 위치에 대해서 물어봤을 때 작동. 어딘지 묻거나, 어디냐고 묻는 등등의 질문에서 작동.
 tools = [
      {
         "type": "function",
         "function": {
             "name": "pepper_location",
-            "description": "누군가의 위치를 물어본다면",
+            "description": "어떤 장소나 위치를 물어보거나 알려달라고 한다면.",
             "parameters": {
                 "type": "object",
                 "properties": {
                     "위치요구": {
                         "type": "string",
-                            "description": "요구 위치 저장.",
+                            "description": "요구 위치 저장.",   
                     },
                 },
 
@@ -54,7 +55,7 @@ tools = [
         "type": "function",
         "function": {
             "name": "pepper_navigation",
-            "description": "장소로 안내를 원한다면",
+            "description": "pepper_location 함수가 사용된 이후 장소로 안내를 원한다면",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -151,6 +152,46 @@ tools = [
             },
         }
     },
+        {
+        "type": "function",
+        "function": {
+            "name": "stop_navigation",
+            "description": "페퍼한테 안내를 멈춰달라고 한다면",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "멈추기": {
+                        "type": "string",
+                            "enum": ["안내 멈추기"],
+                            "description": "안내 멈추기 반환",
+                    },
+                },
+
+            "required": ["멈추기"]
+
+            },
+        }
+    },
+            {
+        "type": "function",
+        "function": {
+            "name": "move",
+            "description": "임의로 어느 방향으로 움직이길 원하면",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "움직이기": {
+                        "type": "string",
+                            "enum": ["앞쪽, 왼쪽, 오른쪽, 뒤쪽, 랜덤"],
+                            "description": "다섯 방향 중 한 곳 선택. 저리가 또는 비켜 등의 애매한 단어일 시 랜덤으로 반환.",
+                    },
+                },
+
+            "required": ["움직이기"]
+
+            },
+        }
+    },
 ]
 
 
@@ -210,7 +251,7 @@ location = {"802": (7.41363859177,0.646141052246,-0.186690305871,0.982418815828)
             "임베디드시스템실습실 캡스톤디자인실": (20.5724372864,1.04382514954,0.0339547197359,0.999423372254),
             "자바OS실습실": (19.0750846863,18.0170345306,0.039317849285,0.999226754409),
             "ABEEK자료 보관실": (29.4902420044,21.1318874359,0.0365514640859,0.999331771972),
-            "컴퓨터네트워크 실습준비실": (8.33035945892,27.9321670532,0.0803707754657,0.996765036732),
+            "컴퓨터 네트워크 실습준비실": (8.33035945892,27.9321670532,0.0803707754657,0.996765036732),
             "실시간시스템 통계분석자료실습실": (-12.9354133606,25.7812213898,0.993836150877,-0.110858942855),
             "인터넷 데이터베이스 실습실": (7.34447479248,28.6684932709,0.996912834196,-0.0785162468207),
             "서쌍희": (31.4291191101,10.8785123825,0.743004555214,0.669286359439),
@@ -229,7 +270,7 @@ location = {"802": (7.41363859177,0.646141052246,-0.186690305871,0.982418815828)
             "전하영": (-19.5648956299,24.276309967,0.108025895974,0.994148080418),
             "이학준": (-19.5648956299,24.276309967,0.108025895974,0.994148080418),
             "박미영": (31.6432685852,6.5971326828,0.733228079123,0.679982782124),
-            "컴퓨터네트워크실습실": (8.33035945892,27.9321670532,0.0803707754657,0.996765036732),
+            "컴퓨터 네트워크 실습실": (8.33035945892,27.9321670532,0.0803707754657,0.996765036732),
             "컴퓨터공학부 사무실": (-16.4710083008,24.6061325073,0.0891534420677,0.996017903337)
             }
 # messages = []
@@ -239,8 +280,21 @@ def move(member):
     for i in location.keys():
         if i in member:
             print("move x: ", location.get(i)[0], "move y: ", location.get(i)[1])
-            return "~~FMG~~navi_{}_{}".format(location.get(i)[0], location.get(i)[1])
+            return "~~FMG~~navi_{}_{}_{}_{}".format(location.get(i)[0], location.get(i)[1],location.get(i)[2],location.get(i)[3])
     return "~~FMG~~None"
+def move_pepper(data):
+    if "왼쪽" in data: 
+        return "~~FMG~~left_move"
+    if "오른쪽" in data: 
+        return "~~FMG~~right_move"
+    if "앞쪽" in data: 
+        return "~~FMG~~front_move"
+    if "뒤쪽" in data: 
+        return "~~FMG~~back_move"
+    if "랜덤" in data: 
+        return "~~FMG~~random_move"
+    
+
 def dance():
     print("dance!!!!!!")
     return "~~FMG~~dance"
@@ -284,6 +338,9 @@ def faceage():
 def nothing():
     return "~~FMG~~nothing"
 
+def stop_navigation():
+    return "~~FMG~~stop_navigation"
+
 
 member = ""
 
@@ -296,8 +353,10 @@ while True:
     chat_response = chat_completion_request(
         messages=messages, tools=tools, tool_choice="auto"
     )
-    assistant_message = chat_response.choices[0].message
-
+    try:
+        assistant_message = chat_response.choices[0].message
+    except:
+        assistant_message = "에러발생"
     print("assistant_message:" , assistant_message.content)
     send_message += "~~BMG~~" + str(assistant_message.content)
 
@@ -320,7 +379,7 @@ while True:
         }
         ) 
         if tool_function_name == "pepper_location":
-            messages.append({"role": "system", "content": "직접 안내가 필요하냐고 물어보기. 만약 안내해달라고 하면, 사족 덧붙이지 말고 \"안내해드릴게요\" 라고 말하기."})
+            messages.append({"role": "system", "content": "위치를 말해주고 직접 안내가 필요하냐고 물어보기. 만약 안내해달라고 하면, 사족 덧붙이지 말고 \"안내해드릴게요\" 라고 말하기."})
             member = tool_calls[0].function.arguments
             chat_use = True
         elif tool_function_name == "pepper_navigation":
@@ -330,7 +389,7 @@ while True:
                 chat_use = True
         elif tool_function_name == "pepper_behavior":
             if "춤 추기" in tool_calls[0].function.arguments:
-                messages.append({"role": "system", "content": "\"춤을 한번 춰볼게요!\"라고 말한다. 춤을 못춘다고 절대 말하지 않는다."})
+                messages.append({"role": "system", "content": "\"춤을 한번 춰볼게요!\"라고 말한다."})
                 send_message += dance()
                 chat_use = True
             elif "박수 치기" in tool_calls[0].function.arguments:
@@ -359,6 +418,26 @@ while True:
 
         elif tool_function_name == "faceage":
                 send_message += faceage()
+        
+        elif tool_function_name == "stop_navigation":
+            if "안내 멈추기" in tool_calls[0].function.arguments:
+                messages.append({"role": "system", "content": "안내를 멈춘다고 말한다."})
+                send_message += stop_navigation()
+                chat_use = True
+        elif tool_function_name == "move":
+            if "움직이기" in tool_calls[0].function.arguments:
+                if "왼쪽" in tool_calls[0].function.arguments:
+                    send_message += move_pepper("왼쪽")
+                elif "오른쪽" in tool_calls[0].function.arguments:
+                    send_message += move_pepper("오른쪽")   
+                elif "앞쪽" in tool_calls[0].function.arguments:
+                    send_message += move_pepper("앞쪽")
+                elif "뒤쪽" in tool_calls[0].function.arguments:
+                    send_message += move_pepper("뒤쪽")
+                elif "랜덤" in tool_calls[0].function.arguments:
+                    send_message += move_pepper("랜덤")
+                messages.append({"role": "system", "content": "이동한다고 말한다."})
+                chat_use = True
 
 
         if chat_use == True:
