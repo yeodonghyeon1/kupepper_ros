@@ -4,32 +4,36 @@
 
 *ros-medloic version ros pepper*
 
-
+ㅎㅎㅎ
 
 #  require
 
->##  ros_navigation
+>##  depthimage_to_laserscan(git clone)
+https://github.com/ros-perception/depthimage_to_laserscan
+
+>##  ira_laser_tools(git clone)
+https://github.com/iralabdisco/ira_laser_tools
+
+>##  ros_navigation(sudo apt install ros-melodic-navigation)
 https://github.com/ros-planning/navigation
 
->##  ros_gmapping
+>##  ros_gmapping(sudo apt install ros-melodic-gmapping)
 
 https://github.com/ros-perception/slam_gmapping
 
->##  ros_openslam gmapping
+>##  ros_openslam gmapping(sudo apt install ros-melodic-openslam_gmapping)
 
 https://github.com/ros-perception/openslam_gmapping
 
->##  naoqi_driver
+>##  naoqi_driver(git clone)
 
 https://github.com/ros-naoqi/naoqi_driver
 
->## pynaoqi
+>## pynaoqi(first install!! )
 https://www.aldebaran.com/en/support/pepper-naoqi-2-9/downloads-softwares
 1. download old:Pepper SDK(for2.5.5 ver)
 2. tar -zxvf <filename>
-3. export PYTJONPATH=${PYTHONPATH}:~/pynaoqi/lib/python2.7/site-packages ->add at ~/.bashrc file
-
-
+3. export PYTJONPATH=${PYTHONPATH}:~/pynaoqi/lib/python2.7/site-packages  # add at ~/.bashrc file, pynaoqi will be change for version!!!
 
 
 #  Error solution
@@ -47,8 +51,10 @@ CMake error with move_base_msgs
 
 >git clone https://github.com/ros-planning/navigation_msgs.git
 
-naoqi driver catkin_make Error
 
+naoqi driver catkin_make Error
+if you already install naoqi_driver for apt, you can't catkin_make naoqi_driver(git clone)
 >sudo apt install ros-melodic-naoqi-driver
+
 
 
