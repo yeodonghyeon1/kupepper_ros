@@ -1,15 +1,21 @@
 <launch>
 
-   <!-- <master auto="start"/> -->
-    <!-- <param name="/use_sim_time" value="true"/> -->
+ <!-- <master auto="start"/> -->
+  <!-- <arg name="ip"   default="192.168.201.51"/>  -->
+  <arg name="ip"   default="192.168.0.125"/> 
+  <arg name="port"   default="9559"/>
 
+
+  <!-- <param name="/use_sim_time" value="true"/> -->
+
+`
  <!-- Run the map server --> 
-   <node pkg="map_server" name="map_server" type="map_server" args="$(find kupepper_ros)/map/test_map.yaml"/>
+   <node pkg="map_server" name="map_server" type="map_server" args="$(find kupepper_ros)/map/test_map3.yaml"/>
 
  <!-- Run the naoqi-driver -->   
     <include file="$(find naoqi_driver)/launch/naoqi_driver.launch" >
-      <arg name="nao_ip"            default="192.168.0.125" />
-      <arg name="nao_port"          default="$(optenv NAO_PORT 9559)" />
+      <arg name="nao_ip"            default="$(arg ip)" />
+      <arg name="nao_port"          default="$(arg port)" />
       <arg name="roscore_ip"        default="127.0.0.1" />
       <arg name="network_interface" default="eth0" />
       <arg name="namespace"         default="naoqi_driver" />
@@ -17,20 +23,24 @@
       <arg name="password"          default="no_password" />
      </include>
 
+
  <!--- Run AMCL --> 
-    <include file="$(find amcl)/examples/amcl_omni.launch" />
+    <include file="$(find kupepper_ros)/launch/amcl_kupepper.launch"/>
 
  <!--- Run qi libarary & control --> 
-   <node pkg="kupepper_ros" type="test.py"  name="kupepper_ros"></node>
+   <node pkg="kupepper_ros" type="main.py"  name="kupepper_ros" output="screen">
+    <param name="pepper_ip" value="$(arg ip)"/>
+    <param name="pepper_port" value="$(arg port)"/>
+   </node>
 
  <!--- Run move_base --> 
-   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
-
-    <rosparam file="$(find kupepper_ros)/yaml2/costmap_common_params.yaml" command="load" ns="global_costmap" /> 
-    <rosparam file="$(find kupepper_ros)/yaml2/costmap_common_params.yaml" command="load" ns="local_costmap" />
+   <node pkg="move_base" type="move_base" respawn="false" name="move_base">
+    <rosparam file="$(find kupepper_ros)/yaml2/costmap_common_params2.yaml" command="load" ns="global_costmap" /> 
+    <rosparam file="$(find kupepper_ros)/yaml2/costmap_common_params2.yaml" command="load" ns="local_costmap" />
     <rosparam file="$(find kupepper_ros)/yaml2/local_costmap_params.yaml" command="load" />
     <rosparam file="$(find kupepper_ros)/yaml2/global_costmap_params.yaml" command="load" /> 
     <rosparam file="$(find kupepper_ros)/yaml2/move_base_params.yaml" command="load" />
+    <!-- <param name="base_local_planner" value="eband_local_planner/EBandPlannerROS"/> -->
     <rosparam file="$(find kupepper_ros)/yaml2/dwa_local_planner_params.yaml" command="load" />
     <rosparam file="$(find kupepper_ros)/yaml2/global_planner_params.yaml" command="load" />
     <rosparam file="$(find kupepper_ros)/yaml2/navfn_global_planner_params.yaml" command="load" />
@@ -38,9 +48,16 @@
     <remap from="cmd_vel" to="cmd_vel"/>
 
  </node>
+
+    <!-- <include file="$(find kupepper_ros)/launch/depthimage_to_laserscan.launch" />
+    <include file="$(find kupepper_ros)/launch/laserscan_multi_merger.launch" /> -->
+ 
  
   <!--- Run rviz --> 
     <node pkg="rviz" type="rviz" name="rviz" required="true"
           args="-d $(find kupepper_ros)/rviz/pepper.rviz"/>
+
+
+<!-- <param name="/use_sim_time" value="true"/> -->
 
 </launch> 

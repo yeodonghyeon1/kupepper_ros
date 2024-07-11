@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>좌우 1:2 비율 레이아웃</title>
+<style>
+    body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+    }
+
+    .container {
+        display: flex;
+        height: 100%;
+    }
+
+    .left-panel {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .top-panel, .bottom-panel {
+        flex: 1;
+        background-color: red;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+    }
+
+    .right-panel {
+        flex: 2;
+        background-color: blue;
+    }
+
+    .my_btn {
+        background-color: skyblue;
+        color: white;
+        border: none;
+        font-size: 3vw;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+</style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="left-panel">
+            <div class="top-panel">
+                <form action="/test1" method="POST">
+                    <button type="submit" value="Button" class="my_btn">지점 이동</button>
+                </form>
+            </div>
+            <div class="bottom-panel">
+                <form action="/test2" method="POST">
+                    <button type="submit" value="Button" class="my_btn">대화하기</button>
+                </form>
+            </div>
+        </div>
+        <div class="right-panel">
+            <img src="{{url_for('static', filename='assets/map.png') }}", width="1000", height="800">
+
+    </div>
+</div>
+
+<!--맹근거-->
+<div class="wrap">
+    <a href="#pop_info_1" class="btn_open">김진호 교수연구실</a>
+    <a href="#pop_info_2" class="btn_open">정민수 교수연구실</a>
+  
+  
+    <div id="pop_info_1" class="pop_wrap" style="display:none;">
+      <div class="pop_inner">
+        <p class="dsc">김진호 010-1234-5678</p>
+        <button type="button" class="btn_close">닫기</button>
+      </div>
+    </div>
+  
+    <div id="pop_info_2" class="pop_wrap" style="display:none;">
+      <div class="pop_inner">
+        <p class="dsc">정민수 010-1212-4545</p>
+        <button type="button" class="btn_close">닫기</button>
+      </div>
+    </div>
+  </div>
+
+
+<script>
+    // 왼쪽 패널의 크기를 측정하여 버튼의 크기를 조정하는 함수
+    function adjustButtonSize() {
+        var panels = document.querySelectorAll('.top-panel, .bottom-panel');
+        var buttons = document.querySelectorAll('.my_btn');
+
+        panels.forEach(function(panel, index) {
+            var button = buttons[index];
+            var panelWidth = panel.offsetWidth;
+            var panelHeight = panel.offsetHeight;
+
+            button.style.width = panelWidth + 'px';
+            button.style.height = panelHeight + 'px';
+        });
+    }
+
+    // 페이지 로드시 및 창 크기 변경시 버튼 크기 조정
+    window.addEventListener('load', adjustButtonSize);
+    window.addEventListener('resize', adjustButtonSize);
+</script>
+
+</body>
+</html>
