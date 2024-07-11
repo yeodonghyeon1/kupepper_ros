@@ -47,7 +47,8 @@ if not os.path.exists(tmp_path):
 
 app = Flask(__name__)
 web_host = "192.168.122.56"
-web_page = "http://192.168.201.43:8080/"
+# web_page = "http://192.168.201.43:8080/"
+web_page = "http://192.168.122.56:8080/"
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -377,7 +378,8 @@ class RosKuPepper:
                     # print(word) #확인용
                     # if self.robot.memory_service.getData("ALSpeechRecognition/Status") == "SpeechDetected":
                     #     self.talk_pepper()
-                    if word[1]>=0.45:
+                    # print(word[1])
+                    if word[1]>=0.425:
                         self.say("네에, 말씀하세요.")
                         # self.start_animation(("BodyTalk_3"), "talk")#질문을 원할때 모션
                         talk_thread = threading.Thread(target=self.talk_pepper)
