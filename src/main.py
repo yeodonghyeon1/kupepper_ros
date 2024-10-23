@@ -47,9 +47,9 @@ if not os.path.exists(tmp_path):
 
 app = Flask(__name__)
 web_host = "192.168.122.56"
-# web_page = "http://192.168.201.43:8080/"
-web_page = "http://192.168.122.56:8080/"
-
+web_page = "http://192.168.226.43:8080/"
+# web_page = "http://192.168.122.56:8080/"
+# web_page = "http://172.20.10.4:8080/"
 
 @app.route('/', methods=['GET', 'POST'])
 def main_page():
@@ -365,7 +365,7 @@ class RosKuPepper:
         self.base_parameter()
         try:
             while True:
-                if app.start == True:
+                if app.start == False:
                     if while_count == 0:
                         self.say("반갑습니다. 페퍼를 동작합니다")
                         self.start_animation(np.random.choice(["Hey_1", "Hey_3", "Hey_4", "Hey_6"]), "hey")
@@ -378,7 +378,7 @@ class RosKuPepper:
                     # print(word) #확인용
                     # if self.robot.memory_service.getData("ALSpeechRecognition/Status") == "SpeechDetected":
                     #     self.talk_pepper()
-                    # print(word[1])
+                    print(word)
                     if word[1]>=0.425:
                         self.say("네에, 말씀하세요.")
                         # self.start_animation(("BodyTalk_3"), "talk")#질문을 원할때 모션
@@ -444,35 +444,46 @@ class RosKuPepper:
 
 
     def talk_pepper(self):
-        start_time = time.time()
         self.event.set()
         try:
             self.audio_recorder.stopMicrophonesRecording()
         except:
             pass
         self.audio_recorder.startMicrophonesRecording("/home/nao/speech.wav", "wav", 48000, (0, 0, 1, 0))
-        time.sleep(1)
+        # time.sleep(0.75)
+        start_time = time.time()
+
         #여기서 endofprocess가 나올때까지 기다리는데 일정시간 지나면 끝내는 코드를 넣어야함
         listenOffCount = 0
+        listenOnCount = 0
         while True:
-            self.tablet_service.showAlertView(1.0,"#50bcdf", 1)
-            print(self.memory_service.getData("ALSpeechRecognition/Status"))
-            if self.memory_service.getData("ALSpeechRecognition/Status") == "EndOfProcess":
-                self.audio_recorder.stopMicrophonesRecording()
-                break
-            if self.memory_service.getData("ALSpeechRecognition/Status") == "ListenOff":
-                listenOffCount += 1
-            if listenOffCount == 3:
+            if(time.time() - start_time > 1):
+                # self.tablet_service.showAlertView(1.0,"#50bcdf", 1)
+                print(self.memory_service.getData("ALSpeechRecognition/Status"))
+                if self.memory_service.getData("ALSpeechRecognition/Status") == "EndOfProcess":
                     self.audio_recorder.stopMicrophonesRecording()
-                    break 
+                    break
+                if self.memory_service.getData("ALSpeechRecognition/Status") == "ListenOff":
+                    listenOffCount += 1
+                if self.memory_service.getData("ALSpeechRecognition/Status") == "ListenOn":
+                    listenOnCount += 1
+                    if listenOnCount == 30:
+                        self.audio_recorder.stopMicrophonesRecording()
+                        break
+                if listenOffCount >= 2:
+                        self.audio_recorder.stopMicrophonesRecording()
+                        break 
             # if (time.time() - start_time) > 5:
             #     break
         # self.robot.audio_service.playFile("/home/nao/speech.wav") #mp3파일 재생 확인용
         self.download_file("speech.wav")
         r = sr.Recognizer()
         kr_audio = sr.AudioFile("{}/speech.wav".format(tmp_path))
-        with kr_audio as source:
-            audio = r.record(source)
+        try:
+            with kr_audio as source:
+                audio = r.record(source)
+        except:
+            print("빈 오디오 데이터")
         # self.robot.say(r.recognize_google(audio, language='ko-KR').encode('utf8'))
         #여기서 recognize로 인식하는데 인식못했을때는 죄송합니다 하고 다시 인식하게 만들어야함
         try:
@@ -561,7 +572,7 @@ class RosKuPepper:
         self.speech_service.pause(True) 
         self.speech_service.removeAllContext() #context를 지워야하는지 몰루
         self.speech_service.deleteAllContexts()
-        self.speech_service.setVocabulary(['pepper','papper','peper', 'ma', 'aye','ya'],False) #true 하면 "<...> hi <...>" 이렇게 나옴
+        self.speech_service.setVocabulary(['pepper','papper','peper', 'aye','ya','peppo'],False) #true 하면 "<...> hi <...>" 이렇게 나옴
         self.speech_service.pause(False)
 
     #error

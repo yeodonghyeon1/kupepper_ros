@@ -42,7 +42,13 @@ tools = [
                 "properties": {
                     "위치요구": {
                         "type": "string",
-                            "description": "요구 위치 저장.",   
+                            "enum" : ["802","801", "803", "정보 과학 교실", "컴퓨터 응용 실습 준비실", "usg 현장 미러형 실습실", \
+                                      "컴퓨터공학 PBL 실", "소프트웨어", "미래 인터넷 실습실", "임베디드 시스템", "자바 OS 실습실", \
+                                      "자료 보관실", "컴퓨터 네트워크 실습 준비실", "실시간 시스템 통계 분석 자료 실습실", \
+                                      "인터넷 데이터베이스 실습실", "서쌍희", "김진호", "정민수", "임현일", "석승준", "공실", \
+                                      "황두영", "김영준", "시스템 분석 실습실", "최형우", "이현동", "이기성", "임지언", \
+                                      "전하영", "이학준", "박미영", "컴퓨터 네트워크 실습실", "컴퓨터공학부"],
+                            "description": "요구 위치 반환"   
                     },
                 },
 
@@ -345,115 +351,121 @@ def stop_navigation():
 member = ""
 
 while True:
-    chat_use = False
-    data = socket.recv(1000)#메시지 받는 부분
-    msg = data.decode() 
-    send_message = ""
-    messages.append({"role": "user", "content" : "{}".format(msg)})
-    chat_response = chat_completion_request(
-        messages=messages, tools=tools, tool_choice="auto"
-    )
     try:
-        assistant_message = chat_response.choices[0].message
-    except:
-        assistant_message = "에러발생"
-    print("assistant_message:" , assistant_message.content)
-    send_message += "~~BMG~~" + str(assistant_message.content)
 
-    tool_calls = assistant_message.tool_calls
-    print(tool_calls)
-
-
-
-    if tool_calls:
-        tool_call_id = tool_calls[0].id
-        tool_function_name = tool_calls[0].function.name
-        print(tool_call_id,tool_function_name ,tool_calls[0].function.arguments)
-        messages.append(assistant_message)
-        messages.append(
-        {
-            "role": "tool",
-            "tool_call_id":tool_call_id,
-            "name": tool_function_name,
-            "content": tool_calls[0].function.arguments,
-        }
-        ) 
-        if tool_function_name == "pepper_location":
-            messages.append({"role": "system", "content": "위치를 말해주고 직접 안내가 필요하냐고 물어보기. 만약 안내해달라고 하면, 사족 덧붙이지 말고 \"안내해드릴게요\" 라고 말하기."})
-            member = tool_calls[0].function.arguments
-            chat_use = True
-        elif tool_function_name == "pepper_navigation":
-            if "직접 안내 필요" in tool_calls[0].function.arguments:
-                print(tool_calls[0].function.arguments)
-                send_message += str(move(member))
-                chat_use = True
-        elif tool_function_name == "pepper_behavior":
-            if "춤 추기" in tool_calls[0].function.arguments:
-                messages.append({"role": "system", "content": "\"춤을 한번 춰볼게요!\"라고 말한다."})
-                send_message += dance()
-                chat_use = True
-            elif "박수 치기" in tool_calls[0].function.arguments:
-                send_message += clap()
-                chat_use = True
-            elif "가위바위보 하기" in tool_calls[0].function.arguments:
-                send_message += rock_paper_scissors()
-                chat_use = True   
-            elif "행동 그만하기" in tool_calls[0].function.arguments:
-                send_message += stop_behavior()
-                chat_use = True 
-
-        elif tool_function_name == "pepper_mood":
-            if "웃기" in tool_calls[0].function.arguments:
-                send_message += happy()
-            elif "화내기" in tool_calls[0].function.arguments:
-                send_message += angry()   
-            elif "슬퍼하기" in tool_calls[0].function.arguments:
-                send_message += sad()   
-
-        elif tool_function_name == "pepper_action":
-            if "기타치기" in tool_calls[0].function.arguments:
-                send_message += guitar()
-            elif "좀비흉내내기" in tool_calls[0].function.arguments:
-                send_message += zombi()     
-
-        elif tool_function_name == "faceage":
-                send_message += faceage()
-        
-        elif tool_function_name == "stop_navigation":
-            if "안내 멈추기" in tool_calls[0].function.arguments:
-                messages.append({"role": "system", "content": "안내를 멈춘다고 말한다."})
-                send_message += stop_navigation()
-                chat_use = True
-        elif tool_function_name == "move":
-            if "움직이기" in tool_calls[0].function.arguments:
-                if "왼쪽" in tool_calls[0].function.arguments:
-                    send_message += move_pepper("왼쪽")
-                elif "오른쪽" in tool_calls[0].function.arguments:
-                    send_message += move_pepper("오른쪽")   
-                elif "앞쪽" in tool_calls[0].function.arguments:
-                    send_message += move_pepper("앞쪽")
-                elif "뒤쪽" in tool_calls[0].function.arguments:
-                    send_message += move_pepper("뒤쪽")
-                elif "랜덤" in tool_calls[0].function.arguments:
-                    send_message += move_pepper("랜덤")
-                messages.append({"role": "system", "content": "이동한다고 말한다."})
-                chat_use = True
-
-
-        if chat_use == True:
-            try:                                
-                chat_response = chat_completion_request(
-                    messages=messages, tools=None, tool_choice=None
-                )
-                assistant_message = chat_response.choices[0].message
-                print("assistant_message:" , assistant_message.content)
-                send_message += "~~TMG~~" + str(assistant_message.content)
-                chat_use = False
-            except:
-                pass
         chat_use = False
-    print(send_message)
-    socket.sendall(send_message.encode(encoding='utf-8'))
+        data = socket.recv(1000)#메시지 받는 부분
+        msg = data.decode() 
+        send_message = ""
+        messages.append({"role": "user", "content" : "{}".format(msg)})
+        chat_response = chat_completion_request(
+            messages=messages, tools=tools, tool_choice="auto"
+        )
+        try:
+            assistant_message = chat_response.choices[0].message
+        except:
+            assistant_message = "에러발생"
+        print("assistant_message:" , assistant_message.content)
+        send_message += "~~BMG~~" + str(assistant_message.content)
+
+        tool_calls = assistant_message.tool_calls
+        print(tool_calls)
+
+
+
+        if tool_calls:
+            tool_call_id = tool_calls[0].id
+            tool_function_name = tool_calls[0].function.name
+            print(tool_call_id,tool_function_name ,tool_calls[0].function.arguments)
+            messages.append(assistant_message)
+            messages.append(
+            {
+                "role": "tool",
+                "tool_call_id":tool_call_id,
+                "name": tool_function_name,
+                "content": tool_calls[0].function.arguments,
+            }
+            ) 
+            if tool_function_name == "pepper_location":
+                messages.append({"role": "system", "content": "위치를 말해주고 직접 안내가 필요하냐고 물어보기. 만약 안내해달라고 하면, 사족 덧붙이지 말고 \"안내해드릴게요\" 라고 말하기."})
+                member = tool_calls[0].function.arguments
+                chat_use = True
+            elif tool_function_name == "pepper_navigation":
+                if "직접 안내 필요" in tool_calls[0].function.arguments:
+                    print(tool_calls[0].function.arguments)
+                    send_message += str(move(member))
+                    chat_use = True
+            elif tool_function_name == "pepper_behavior":
+                if "춤 추기" in tool_calls[0].function.arguments:
+                    messages.append({"role": "system", "content": "\"춤을 한번 춰볼게요!\"라고 말한다."})
+                    send_message += dance()
+                    chat_use = True
+                elif "박수 치기" in tool_calls[0].function.arguments:
+                    send_message += clap()
+                    chat_use = True
+                elif "가위바위보 하기" in tool_calls[0].function.arguments:
+                    send_message += rock_paper_scissors()
+                    chat_use = True   
+                elif "행동 그만하기" in tool_calls[0].function.arguments:
+                    send_message += stop_behavior()
+                    chat_use = True 
+
+            elif tool_function_name == "pepper_mood":
+                if "웃기" in tool_calls[0].function.arguments:
+                    send_message += happy()
+                elif "화내기" in tool_calls[0].function.arguments:
+                    send_message += angry()   
+                elif "슬퍼하기" in tool_calls[0].function.arguments:
+                    send_message += sad()   
+
+            elif tool_function_name == "pepper_action":
+                if "기타치기" in tool_calls[0].function.arguments:
+                    send_message += guitar()
+                elif "좀비흉내내기" in tool_calls[0].function.arguments:
+                    send_message += zombi()     
+
+            elif tool_function_name == "faceage":
+                    send_message += faceage()
+            
+            elif tool_function_name == "stop_navigation":
+                if "안내 멈추기" in tool_calls[0].function.arguments:
+                    messages.append({"role": "system", "content": "안내를 멈춘다고 말한다."})
+                    send_message += stop_navigation()
+                    chat_use = True
+            elif tool_function_name == "move":
+                if "움직이기" in tool_calls[0].function.arguments:
+                    if "왼쪽" in tool_calls[0].function.arguments:
+                        send_message += move_pepper("왼쪽")
+                    elif "오른쪽" in tool_calls[0].function.arguments:
+                        send_message += move_pepper("오른쪽")   
+                    elif "앞쪽" in tool_calls[0].function.arguments:
+                        send_message += move_pepper("앞쪽")
+                    elif "뒤쪽" in tool_calls[0].function.arguments:
+                        send_message += move_pepper("뒤쪽")
+                    elif "랜덤" in tool_calls[0].function.arguments:
+                        send_message += move_pepper("랜덤")
+                    messages.append({"role": "system", "content": "이동한다고 말한다."})
+                    chat_use = True
+
+
+            if chat_use == True:
+                try:                                
+                    chat_response = chat_completion_request(
+                        messages=messages, tools=None, tool_choice=None
+                    )
+                    assistant_message = chat_response.choices[0].message
+                    print("assistant_message:" , assistant_message.content)
+                    send_message += "~~TMG~~" + str(assistant_message.content)
+                    chat_use = False
+                except:
+                    pass
+            chat_use = False
+        print(send_message)
+        socket.sendall(send_message.encode(encoding='utf-8'))
+    except:
+        send_message = "~~BMG~~네트워크 에러 발생 다시 시도해주세요"
+        print(send_message)
+        socket.sendall(send_message.encode(encoding='utf-8'))       
 
     if msg == '/end':
         break
