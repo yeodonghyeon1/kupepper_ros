@@ -92,40 +92,6 @@ roslaunch pepper_bringup pepper_full.launch nao_ip:=<PEPPER_IP>
 roslaunch pepper_navigation navigation.launch
 ```
 
-## 문제 해결 🔍
-
-### 일반적인 에러 해결 방법
-
-1. SDL 관련 에러:
-```bash
-sudo apt-get install libsdl-image1.2-dev
-sudo apt-get install libsdl-dev
-```
-
-2. tf2_sensor_msgs 에러:
-```bash
-sudo apt-get install ros-kinetic-tf2-sensor-msgs
-```
-
-3. NAOqi 드라이버 빌드 에러:
-- apt로 설치된 naoqi_driver가 있는 경우 git clone 버전과 충돌 발생
-- 해결: `sudo apt install ros-melodic-naoqi-driver` 사용
-
-## 기여 방법 🤝
-
-1. Fork the repository
-2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
-
----
-
-# introduce
-
-_ros-medloic version ros pepper_
-
-ㅎㅎㅎ
 
 # require
 
