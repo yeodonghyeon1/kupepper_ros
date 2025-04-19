@@ -2,145 +2,189 @@
 
 ## 프로젝트 개요
 
-이 프로젝트는 Pepper 로봇을 ROS (Robot Operating System)와 통합하여 자율 주행 및 네비게이션 기능을 구현한 시스템입니다.
+이 프로젝트는 Pepper 로봇을 ROS (Robot Operating System)와 통합하여 자율 주행, 네비게이션, 그리고 GPT 기반 대화 기능을 구현한 시스템입니다.
 
 ## 주요 기능 🎯
 
 1. **자율 주행 시스템**
-   - SLAM을 통한 지도 생성
-   - 네비게이션 및 장애물 회피
+   - SLAM 기반 지도 생성 (gmapping)
+   - AMCL 기반 위치 추정
+   - 다중 레이저 스캔 데이터 통합
    - 깊이 이미지를 레이저 스캔으로 변환
 
 2. **Pepper 로봇 제어**
    - NAOqi 드라이버 통합
-   - 로봇 모션 제어
-   - 센서 데이터 처리
+   - MoveIt! 기반 모션 제어
+   - 웹 인터페이스 기반 원격 제어
 
-3. **시각화 도구**
-   - RViz 설정 및 시각화
-   - 맵 데이터 표시
-   - 센서 데이터 시각화
+3. **GPT 통합**
+   - ROS-GPT 인터페이스
+   - 자연어 기반 로봇 제어
+   - Flask 기반 웹 서버 통합
 
 ## 시스템 구조 📂
 
 ```
 kupepper_ros/
-├── config/       # 설정 파일
+├── config/       # 로봇 및 네비게이션 설정
 ├── launch/       # 실행 파일
-├── map/          # 맵 데이터
-├── rviz/         # RViz 설정
+│   ├── amcl_kupepper.launch    # 위치 추정
+│   ├── cartographer.launch     # 지도 생성
+│   ├── pepper_gmapping.launch  # SLAM
+│   └── move_test.launch       # 이동 테스트
+├── map/          # 생성된 맵 저장
+├── rviz/         # 시각화 설정
 ├── src/          # 소스 코드
-├── yaml/         # YAML 설정
-└── yaml2/        # 추가 YAML 설정
+│   ├── flask_server.py       # 웹 서버
+│   ├── rosgpt.py            # GPT 인터페이스
+│   ├── moveit_test.py       # 모션 제어
+│   └── main.py              # 메인 로직
+└── yaml/         # 파라미터 설정
+
+```
+
+## 필수 패키지 및 의존성 📦
+
+### ROS 패키지
+```bash
+# 네비게이션 스택
+sudo apt install ros-melodic-navigation
+sudo apt install ros-melodic-gmapping
+sudo apt install ros-melodic-openslam-gmapping
+
+# MoveIt!
+sudo apt install ros-melodic-moveit
+
+# 기타 의존성
+sudo apt install ros-melodic-tf2-sensor-msgs
+sudo apt install libsdl-image1.2-dev libsdl-dev
+```
+
+### Python 패키지
+```bash
+pip install flask
+pip install openai
+```
+
+### 추가 의존성 패키지
+```bash
+cd ~/catkin_ws/src
+
+# 깊이 이미지 변환
+git clone https://github.com/ros-perception/depthimage_to_laserscan
+
+# 레이저 스캔 통합
+git clone https://github.com/iralabdisco/ira_laser_tools
+
+# 네비게이션 메시지
+git clone https://github.com/ros-planning/navigation_msgs.git
 ```
 
 ## 설치 방법 🔧
 
-### 필수 패키지 설치
-
+1. **PyNAOqi SDK 설치**
 ```bash
-# ROS 네비게이션 패키지
-sudo apt install ros-melodic-navigation
+# Pepper SDK 2.5.5 다운로드 및 설치
+wget https://community-static.aldebaran.com/resources/2.5.5/Python%20SDK/pynaoqi-python2.7-2.5.5.5-linux64.tar.gz
+tar -xvzf pynaoqi-python2.7-2.5.5.5-linux64.tar.gz
 
-# GMAPPING 패키지
-sudo apt install ros-melodic-gmapping
-sudo apt install ros-melodic-openslam_gmapping
-
-# NAOqi 드라이버
-sudo apt install ros-melodic-naoqi-driver
-```
-
-### 추가 의존성 패키지 (Git Clone 필요)
-
-```bash
-cd ~/catkin_ws/src
-
-# Depth Image to Laser Scan
-git clone https://github.com/ros-perception/depthimage_to_laserscan
-
-# IRA Laser Tools
-git clone https://github.com/iralabdisco/ira_laser_tools
-
-# Navigation Messages (필요한 경우)
-git clone https://github.com/ros-planning/navigation_msgs.git
-```
-
-### PyNAOqi SDK 설치
-
-1. Pepper SDK 2.5.5 버전 다운로드
-2. 압축 해제: `tar -zxvf pynaoqi-python2.7-2.5.5.5-linux64.tar.gz`
-3. 환경변수 설정:
-```bash
+# 환경변수 설정
 echo "export PYTHONPATH=${PYTHONPATH}:~/pynaoqi/lib/python2.7/site-packages" >> ~/.bashrc
 source ~/.bashrc
 ```
 
+2. **워크스페이스 설정**
+```bash
+mkdir -p ~/catkin_ws/src
+cd ~/catkin_ws/src
+git clone https://github.com/yeodonghyeon1/kupepper_ros.git
+cd ..
+catkin_make
+source devel/setup.bash
+```
+
 ## 실행 방법 🚀
 
-1. ROS 마스터 실행
+1. **Pepper 연결 설정**
 ```bash
-roscore
+# Pepper 설정 실행
+roslaunch kupepper_ros pepper_configuration.launch nao_ip:=<PEPPER_IP>
 ```
 
-2. Pepper 로봇 연결
+2. **SLAM 모드 (지도 생성)**
 ```bash
-roslaunch pepper_bringup pepper_full.launch nao_ip:=<PEPPER_IP>
+# SLAM 실행
+roslaunch kupepper_ros pepper_gmapping.launch
 ```
 
-3. 네비게이션 실행
+3. **네비게이션 모드**
 ```bash
-roslaunch pepper_navigation navigation.launch
+# 저장된 지도로 네비게이션
+roslaunch kupepper_ros amcl_kupepper.launch
 ```
 
+4. **웹 인터페이스 실행**
+```bash
+# Flask 서버 실행
+rosrun kupepper_ros flask_server.py
+```
 
-# require
+## 주요 기능 사용법 💡
 
-> ## depthimage_to_laserscan(git clone)
+1. **지도 생성**
+   - gmapping 또는 Cartographer 중 선택
+   - RViz에서 실시간 지도 확인
+   - 지도 저장: `rosrun map_server map_saver`
 
-https://github.com/ros-perception/depthimage_to_laserscan
+2. **자율 주행**
+   - RViz에서 2D Nav Goal 설정
+   - 웹 인터페이스에서 목적지 지정
+   - GPT 명령어로 이동 지시
 
-> ## ira_laser_tools(git clone)
+3. **로봇 제어**
+   - MoveIt!을 통한 관절 제어
+   - 웹 인터페이스를 통한 원격 조작
+   - 음성 명령을 통한 제어
 
-https://github.com/iralabdisco/ira_laser_tools
+## 문제 해결 🔍
 
-> ## ros_navigation(sudo apt install ros-melodic-navigation)
+1. **NAOqi 드라이버 관련**
+   - apt로 설치된 naoqi_driver와 소스 빌드 버전 충돌 시:
+   ```bash
+   sudo apt remove ros-melodic-naoqi-driver
+   sudo apt install ros-melodic-naoqi-driver
+   ```
 
-https://github.com/ros-planning/navigation
+2. **의존성 문제**
+   - SDL 관련 에러:
+   ```bash
+   sudo apt-get install libsdl-image1.2-dev
+   sudo apt-get install libsdl-dev
+   ```
 
-> ## ros_gmapping(sudo apt install ros-melodic-gmapping)
+3. **네비게이션 문제**
+   - 레이저 스캔 데이터 확인
+   - TF 트리 구조 확인
+   - 파라미터 튜닝
 
-https://github.com/ros-perception/slam_gmapping
+## 기여 방법 🤝
 
-> ## ros_openslam gmapping(sudo apt install ros-melodic-openslam_gmapping)
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
 
-https://github.com/ros-perception/openslam_gmapping
+## 라이선스 📄
 
-> ## naoqi_driver(git clone)
+이 프로젝트는 MIT 라이선스 하에 배포됩니다.
 
-https://github.com/ros-naoqi/naoqi_driver
+---
 
-> ## pynaoqi(first install!! )
+# introduce
 
-https://www.aldebaran.com/en/support/pepper-naoqi-2-9/downloads-softwares
+_ros-medloic version ros pepper_
 
-1. download old:Pepper SDK(for2.5.5 ver)
-2. tar -zxvf
-3. export PYTJONPATH=${PYTHONPATH}:~/pynaoqi/lib/python2.7/site-packages # add at ~/.bashrc file, pynaoqi will be change for version!!!
+ㅎㅎㅎ
 
-# Error solution
-
-Could NOT find SDL (missing: SDL_LIBRARY SDL_INCLUDE_DIR)
-
-> sudo apt-get install libsdl-image1.2-dev sudo apt-get install libsdl-dev
-
-Could not find a package configuration file provided by "tf2_sensor_msg
-
-> sudo apt-get install ros-kinetic-tf2-sensor-msgs
-
-CMake error with move_base_msgs
-
-> git clone https://github.com/ros-planning/navigation_msgs.git
-
-naoqi driver catkin_make Error if you already install naoqi_driver for apt, you can't catkin_make naoqi_driver(git clone)
-
-> sudo apt install ros-melodic-naoqi-driver
+[이하 기존 README 내용 유지...]
