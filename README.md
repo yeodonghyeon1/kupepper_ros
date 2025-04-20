@@ -140,7 +140,7 @@ source devel/setup.bash
 
 ```bash
 # Pepper 설정 실행
-roslaunch kupepper_ros pepper_configuration.launch nao_ip:=<PEPPER_IP>
+roslaunch kupepper_ros kupepper.launch
 ```
 
 ### 2. SLAM 모드 (지도 생성)
@@ -150,19 +150,6 @@ roslaunch kupepper_ros pepper_configuration.launch nao_ip:=<PEPPER_IP>
 roslaunch kupepper_ros pepper_gmapping.launch
 ```
 
-### 3. 네비게이션 모드
-
-```bash
-# 저장된 지도로 네비게이션
-roslaunch kupepper_ros amcl_kupepper.launch
-```
-
-### 4. 웹 인터페이스 실행
-
-```bash
-# Flask 서버 실행
-rosrun kupepper_ros flask_server.py
-```
 
 ## 주요 기능 사용법 💡
 
