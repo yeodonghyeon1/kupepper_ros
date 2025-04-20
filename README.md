@@ -1,6 +1,8 @@
 # Pepper Robot ROS Integration Project 🤖
 
 ![스크린샷 2025-03-05 182143 - 복사본](https://github.com/user-attachments/assets/e32462bc-1650-4386-96bc-9bd12a0fa725)
+![KakaoTalk_20250305_192637667](https://github.com/user-attachments/assets/7b5e628d-6824-4ba8-ac15-a22d23645be8)
+https://youtube.com/shorts/9QvCRJi_8eQ
 
 ## 프로젝트 개요
 
