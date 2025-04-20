@@ -1,8 +1,9 @@
 # Pepper Robot ROS Integration Project 🤖
 
 
-<img src="https://github.com/user-attachments/assets/e32462bc-1650-4386-96bc-9bd12a0fa725"  width="200" height="400"/>
-<img src="https://github.com/user-attachments/assets/7b5e628d-6824-4ba8-ac15-a22d23645be8"  width="200" height="400"/>
+<img src="https://github.com/user-attachments/assets/e32462bc-1650-4386-96bc-9bd12a0fa725"  width="400" height="400"/>
+<img src="https://github.com/user-attachments/assets/7b5e628d-6824-4ba8-ac15-a22d23645be8"  width="400" height="400"/>
+
 https://youtube.com/shorts/9QvCRJi_8eQ
 
 ## 프로젝트 개요
