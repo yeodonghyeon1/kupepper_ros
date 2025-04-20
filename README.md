@@ -1,5 +1,7 @@
 # Pepper Robot ROS Integration Project 🤖
 
+![스크린샷 2025-03-05 182143 - 복사본](https://github.com/user-attachments/assets/e32462bc-1650-4386-96bc-9bd12a0fa725)
+
 ## 프로젝트 개요
 
 이 프로젝트는 Pepper 로봇을 ROS (Robot Operating System)와 통합하여 자율 주행, 네비게이션, 그리고 GPT 기반 대화 기능을 구현한 시스템입니다.
