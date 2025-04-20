@@ -55,10 +55,10 @@
 kupepper_ros/
 ├── config/       # 로봇 및 네비게이션 설정
 ├── launch/       # 실행 파일
-│   ├── amcl_kupepper.launch    # 위치 추정
-│   ├── cartographer.launch     # 지도 생성
-│   ├── pepper_gmapping.launch  # SLAM
-│   └── move_test.launch       # 이동 테스트
+│   ├── kupepper.launch    # 통합 실행
+│   └── pepper_gmapping.launch     # 지도 생성
+│   
+│   
 ├── map/          # 생성된 맵 저장
 ├── rviz/         # 시각화 설정
 ├── src/          # 소스 코드
